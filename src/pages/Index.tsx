@@ -66,7 +66,7 @@ function Hero() {
         <div className="n-split-hero n-reveal" ref={ref}>
           {/* Left */}
           <div>
-            <div className="n-label">Интегратор amoCRM с погружением в бизнес</div>
+            <div className="n-label">Интеграция amoCRM с погружением в бизнес</div>
             <h1 className="n-h1" style={{ marginBottom: "1.5rem" }}>
               Внедряем. Настраиваем. Докручиваем{" "}
               <span style={{ color: "var(--clr-blue)" }}>до результата.</span>
