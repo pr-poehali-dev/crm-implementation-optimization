@@ -214,7 +214,7 @@ function Hero() {
               <span style={{ color: "var(--clr-blue)" }}>до результата.</span>
             </h1>
             <p className="n-lead" style={{ maxWidth: "54ch", marginBottom: "2.25rem" }}>
-              Связываем маркетинг и продажи в одну систему, убираем хаос в заявках и продолжаем улучшать CRM после запуска.
+              Связываем маркетинг с продажами в одну рабочую систему.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", marginBottom: "2.5rem" }}>
               <a className="n-btn n-btn-primary" href="#cta">Получить консультацию</a>
@@ -224,7 +224,7 @@ function Hero() {
               {[
                 { icon: "BadgeCheck", text: "Сертифицированные партнёры amoCRM" },
                 { icon: "Settings", text: "Настройка под процессы, не по шаблону" },
-                { icon: "HeartHandshake", text: "Поддержка и улучшения после запуска" },
+                { icon: "HeartHandshake", text: "Поддержка после запуска" },
               ].map(c => (
                 <div key={c.text} className="n-chip">
                   <Icon name={c.icon} size={15} style={{ color: "var(--clr-blue)", flexShrink: 0 }} fallback="Check" />
@@ -251,14 +251,11 @@ function Approach() {
         <div className="n-section-head n-reveal" ref={ref}>
           <div>
             <div className="n-label">Подход</div>
-            <h2 className="n-h2">Мы вникаем в бизнес — и только потом настраиваем систему</h2>
+            <h2 className="n-h2">Мы не просто внедряем amoCRM — мы находим слабые места и улучшаем систему, чтобы она реально помогала продажам.</h2>
           </div>
           <div>
-            <p className="n-muted" style={{ marginBottom: "1rem" }}>
-              CRM — не просто карточки и статусы. Это инструмент, который должен помогать обрабатывать лиды быстрее, не терять клиентов и видеть реальные причины просадки продаж.
-            </p>
             <p className="n-muted">
-              Мы погружаемся в ваш процесс: как приходят заявки, где теряется скорость, почему часть лидов не доходит до сделки. После этого выстраиваем систему, которая помогает бизнесу работать точнее и результативнее.
+              Для нас CRM — это не просто карточки сделок, статусы и автоматизации. Это инструмент, который должен помогать бизнесу быстрее обрабатывать лиды, не терять клиентов, видеть реальные причины просадки продаж и выстраивать работу команды так, чтобы маркетинг и отдел продаж наконец начали работать в одной связке.
             </p>
           </div>
         </div>
@@ -267,10 +264,10 @@ function Approach() {
         <RevealWrapper>
           <div className="n-flow">
             {[
-              { icon: "Megaphone", label: "Маркетинг", desc: "Реклама, каналы, лиды" },
-              { icon: "Settings2", label: "amoCRM", desc: "Единая логика и контроль" },
+              { icon: "GitBranch", label: "Лиды", desc: "Из всех источников" },
+              { icon: "Settings2", label: "CRM", desc: "Единая логика и контроль" },
               { icon: "Users", label: "Отдел продаж", desc: "Задачи, касания, этапы" },
-              { icon: "TrendingUp", label: "Результат", desc: "Прозрачность и рост" },
+              { icon: "CheckCircle2", label: "Сделка", desc: "Прозрачный результат" },
             ].map((s, i, arr) => (
               <div key={s.label} className="n-flow-step">
                 <div className="n-flow-icon">
@@ -710,10 +707,6 @@ function CtaForm() {
                   <Icon name="Mail" size={15} style={{ color: "var(--clr-blue)" }} />
                   neurocontent.wave@gmail.com
                 </a>
-                <a href="#form" className="n-chip" style={{ width: "fit-content" }}>
-                  <Icon name="MessageSquare" size={15} style={{ color: "var(--clr-teal)" }} />
-                  Написать в Telegram
-                </a>
               </div>
             </div>
           </RevealWrapper>
@@ -778,7 +771,7 @@ function Footer() {
           </div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "1rem", fontSize: "0.875rem" }}>
-          <span>Интегратор amoCRM с погружением в бизнес</span>
+          <span>Интеграция amoCRM с погружением в бизнес</span>
           <span>neurocontent.wave@gmail.com</span>
         </div>
       </div>
