@@ -53,6 +53,148 @@ function Header() {
   );
 }
 
+// ─── Hero Visual ─────────────────────────────────────────────────────────────
+function HeroVisual() {
+  const card: React.CSSProperties = {
+    background: "#fff",
+    border: "1px solid var(--clr-border)",
+    borderRadius: 20,
+    padding: "1.125rem 1.25rem",
+    boxShadow: "0 2px 12px rgba(0,0,0,.05)",
+    position: "relative",
+  };
+  const label: React.CSSProperties = {
+    fontSize: "0.6875rem",
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    color: "var(--clr-faint)",
+    marginBottom: "0.75rem",
+  };
+  const iconWrap = (color: string, bg: string): React.CSSProperties => ({
+    width: 32, height: 32, borderRadius: 9,
+    background: bg, color, display: "flex",
+    alignItems: "center", justifyContent: "center", flexShrink: 0,
+  });
+
+  return (
+    <div style={{ position: "relative", padding: "0.5rem" }}>
+      {/* Glow behind composition */}
+      <div style={{ position: "absolute", top: "20%", right: "0", width: 260, height: 260, borderRadius: "50%", background: "var(--clr-glow-blue)", filter: "blur(60px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "10%", left: "5%", width: 200, height: 200, borderRadius: "50%", background: "var(--clr-glow-teal)", filter: "blur(60px)", pointerEvents: "none" }} />
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", position: "relative", zIndex: 1 }}>
+
+        {/* Row 1: Sources → amoCRM */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "0.625rem", alignItems: "center" }}>
+          {/* Sources */}
+          <div style={card}>
+            <div style={label}>Источники лидов</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
+              {[
+                { icon: "Globe", text: "Сайт / Форма", color: "var(--clr-blue)", bg: "var(--clr-blue-light)" },
+                { icon: "Send", text: "Telegram", color: "var(--clr-teal)", bg: "var(--clr-teal-light)" },
+                { icon: "Megaphone", text: "Реклама", color: "var(--clr-blue)", bg: "var(--clr-blue-light)" },
+              ].map(s => (
+                <div key={s.text} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <div style={iconWrap(s.color, s.bg)}>
+                    <Icon name={s.icon} size={14} fallback="Circle" />
+                  </div>
+                  <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "var(--clr-text)" }}>{s.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Arrow */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
+            <div style={{ width: 28, height: 1.5, background: "linear-gradient(90deg, var(--clr-border), var(--clr-blue))", borderRadius: 1 }} />
+            <div style={{ width: 0, height: 0, borderTop: "5px solid transparent", borderBottom: "5px solid transparent", borderLeft: "7px solid var(--clr-blue)" }} />
+          </div>
+
+          {/* amoCRM central */}
+          <div style={{ ...card, borderColor: "rgba(29,78,216,0.25)", boxShadow: "0 0 0 3px rgba(29,78,216,0.07), 0 2px 12px rgba(0,0,0,.06)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: "var(--clr-blue)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Icon name="Settings2" size={14} style={{ color: "#fff" }} />
+              </div>
+              <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "var(--clr-text)" }}>amoCRM</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+              {["Новая заявка", "Квалификация", "Переговоры", "Сделка"].map((stage, i) => (
+                <div key={stage} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: i === 0 ? "var(--clr-teal)" : i === 3 ? "#22C55E" : "var(--clr-blue)", flexShrink: 0 }} />
+                  <span style={{ fontSize: "0.75rem", color: i === 3 ? "#22C55E" : "var(--clr-muted)", fontWeight: i === 3 ? 600 : 400 }}>{stage}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Row 2: Marketing+Sales → Control */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "0.625rem", alignItems: "center" }}>
+          {/* Marketing & Sales */}
+          <div style={card}>
+            <div style={label}>Связка отделов</div>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <div style={{ flex: 1, background: "var(--clr-blue-light)", border: "1px solid rgba(29,78,216,0.15)", borderRadius: 12, padding: "0.625rem 0.75rem", textAlign: "center" }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: "var(--clr-blue)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.375rem" }}>
+                  <Icon name="Megaphone" size={14} style={{ color: "#fff" }} />
+                </div>
+                <span style={{ fontSize: "0.6875rem", fontWeight: 600, color: "var(--clr-blue)" }}>Маркетинг</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", color: "var(--clr-faint)", fontSize: "1rem", fontWeight: 700 }}>↔</div>
+              <div style={{ flex: 1, background: "var(--clr-teal-light)", border: "1px solid rgba(20,184,166,0.15)", borderRadius: 12, padding: "0.625rem 0.75rem", textAlign: "center" }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: "var(--clr-teal)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.375rem" }}>
+                  <Icon name="Users" size={14} style={{ color: "#fff" }} />
+                </div>
+                <span style={{ fontSize: "0.6875rem", fontWeight: 600, color: "var(--clr-teal)" }}>Продажи</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Arrow down-right */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
+            <div style={{ width: 28, height: 1.5, background: "linear-gradient(90deg, var(--clr-border), var(--clr-teal))", borderRadius: 1 }} />
+            <div style={{ width: 0, height: 0, borderTop: "5px solid transparent", borderBottom: "5px solid transparent", borderLeft: "7px solid var(--clr-teal)" }} />
+          </div>
+
+          {/* Control */}
+          <div style={card}>
+            <div style={label}>Контроль</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              {[
+                { metric: "Лидов сегодня", val: "12", color: "var(--clr-blue)" },
+                { metric: "Конверсия", val: "31%", color: "var(--clr-teal)" },
+                { metric: "В работе", val: "38", color: "var(--clr-text)" },
+              ].map(m => (
+                <div key={m.metric} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: "0.75rem", color: "var(--clr-faint)" }}>{m.metric}</span>
+                  <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: m.color }}>{m.val}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom: Result */}
+        <div style={{ ...card, background: "linear-gradient(135deg, var(--clr-blue-light), var(--clr-teal-light))", borderColor: "rgba(29,78,216,0.15)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+              <div style={{ width: 32, height: 32, borderRadius: 10, background: "#fff", border: "1px solid var(--clr-border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Icon name="TrendingUp" size={16} style={{ color: "var(--clr-blue)" }} />
+              </div>
+              <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--clr-text)" }}>Все заявки в одной системе. Прозрачно.</span>
+            </div>
+            <span className="n-tag n-tag-teal" style={{ fontSize: "0.6875rem" }}>Система работает</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
 // ─── Hero ────────────────────────────────────────────────────────────────────
 function Hero() {
   const ref = useReveal();
@@ -92,62 +234,8 @@ function Hero() {
             </div>
           </div>
 
-          {/* Right — CRM mockup */}
-          <div className="n-crm-mockup">
-            {/* Mockup header */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", paddingBottom: "0.875rem", borderBottom: "1px solid var(--clr-border)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#EF4444" }} />
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#F59E0B" }} />
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22C55E" }} />
-              </div>
-              <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--clr-faint)", letterSpacing: "0.04em" }}>amoCRM · Воронка продаж</div>
-              <div style={{ width: 60 }} />
-            </div>
-            {/* Pipeline */}
-            <div style={{ display: "flex", gap: "0.625rem" }}>
-              {[
-                { label: "Новые заявки", tag: "n-tag-teal", tagText: "Входящие", deals: [
-                  { name: "ООО Ромашка", meta: "из Telegram · сегодня", amt: "180 000 ₽" },
-                  { name: "Иван Петров", meta: "из формы · 2 ч. назад", amt: "95 000 ₽" },
-                ]},
-                { label: "Квалификация", tag: "n-tag-blue", tagText: "В работе", deals: [
-                  { name: "Стройкомплект", meta: "менеджер: Алина", amt: "320 000 ₽" },
-                  { name: "Медцентр №3", meta: "звонок завтра 11:00", amt: "210 000 ₽" },
-                ]},
-                { label: "Переговоры", tag: "n-tag-gray", tagText: "КП отправлено", deals: [
-                  { name: "Турагентство", meta: "КП от 05.04", amt: "75 000 ₽" },
-                ]},
-              ].map(col => (
-                <div key={col.label} className="n-pipeline-col">
-                  <div className="n-pipeline-label">{col.label}</div>
-                  {col.deals.map(d => (
-                    <div key={d.name} className="n-deal-card">
-                      <div className="n-deal-name">{d.name}</div>
-                      <div className="n-deal-meta">{d.meta}</div>
-                      <div style={{ marginTop: "0.4rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span className={`n-tag ${col.tag}`}>{col.tagText}</span>
-                        <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--clr-text)" }}>{d.amt}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-            {/* Stats row */}
-            <div style={{ display: "flex", gap: "0.625rem", marginTop: "0.875rem" }}>
-              {[
-                { label: "Лидов сегодня", val: "12" },
-                { label: "Конверсия", val: "31%" },
-                { label: "В работе", val: "38" },
-              ].map(s => (
-                <div key={s.label} style={{ flex: 1, background: "var(--clr-bg)", border: "1px solid var(--clr-border)", borderRadius: 10, padding: "0.6rem 0.75rem" }}>
-                  <div style={{ fontSize: "0.625rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--clr-faint)", marginBottom: 2 }}>{s.label}</div>
-                  <div style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--clr-text)" }}>{s.val}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Right — System composition */}
+          <HeroVisual />
         </div>
       </div>
     </section>
