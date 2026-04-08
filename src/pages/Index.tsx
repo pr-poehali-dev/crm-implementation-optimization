@@ -28,7 +28,7 @@ function Header() {
 
   return (
     <header className="n-header" style={{ boxShadow: scrolled ? "0 1px 8px rgba(0,0,0,.06)" : "none" }}>
-      <div className="n-wrap" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "72px", gap: "1rem" }}>
+      <div className="n-wrap n-header-inner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "72px", gap: "1rem" }}>
         {/* Brand */}
         <a href="#hero" style={{ display: "flex", alignItems: "center", gap: "0.65rem", textDecoration: "none" }}>
           <div style={{ width: 40, height: 40, borderRadius: 12, background: "var(--clr-blue)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -195,6 +195,50 @@ function HeroVisual() {
   );
 }
 
+// ─── Hero Visual Mobile ──────────────────────────────────────────────────────
+function HeroVisualMobile() {
+  return (
+    <div style={{ display: "none" }} className="hero-visual-mobile">
+      <div style={{ display: "grid", gap: "0.75rem" }}>
+        {/* Flow strip */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", background: "#fff", border: "1px solid var(--clr-border)", borderRadius: 16, padding: "1rem 1.25rem", boxShadow: "0 2px 8px rgba(0,0,0,.04)" }}>
+          {[
+            { icon: "GitBranch", label: "Лиды", color: "var(--clr-teal)" },
+            { icon: "Settings2", label: "CRM", color: "var(--clr-blue)" },
+            { icon: "Users", label: "Продажи", color: "var(--clr-blue)" },
+            { icon: "CheckCircle2", label: "Сделка", color: "#22C55E" },
+          ].map((s, i, arr) => (
+            <div key={s.label} style={{ display: "flex", alignItems: "center", gap: "0.375rem", flex: 1, justifyContent: "center" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.25rem" }}>
+                <div style={{ width: 32, height: 32, borderRadius: 9, background: "var(--clr-bg)", border: "1px solid var(--clr-border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name={s.icon} size={15} style={{ color: s.color }} fallback="Circle" />
+                </div>
+                <span style={{ fontSize: "0.625rem", fontWeight: 600, color: "var(--clr-faint)", textAlign: "center" }}>{s.label}</span>
+              </div>
+              {i < arr.length - 1 && (
+                <span style={{ color: "var(--clr-border)", fontWeight: 700, fontSize: "0.875rem", flexShrink: 0, marginBottom: "1rem" }}>→</span>
+              )}
+            </div>
+          ))}
+        </div>
+        {/* Stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.625rem" }}>
+          {[
+            { label: "Лидов сегодня", val: "12", color: "var(--clr-blue)" },
+            { label: "Конверсия", val: "31%", color: "var(--clr-teal)" },
+            { label: "В работе", val: "38", color: "var(--clr-text)" },
+          ].map(m => (
+            <div key={m.label} style={{ background: "#fff", border: "1px solid var(--clr-border)", borderRadius: 12, padding: "0.75rem", textAlign: "center", boxShadow: "0 1px 4px rgba(0,0,0,.04)" }}>
+              <div style={{ fontSize: "1.25rem", fontWeight: 800, color: m.color }}>{m.val}</div>
+              <div style={{ fontSize: "0.625rem", fontWeight: 600, color: "var(--clr-faint)", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 2 }}>{m.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Hero ────────────────────────────────────────────────────────────────────
 function Hero() {
   const ref = useReveal();
@@ -216,11 +260,11 @@ function Hero() {
             <p className="n-lead" style={{ maxWidth: "54ch", marginBottom: "2.25rem" }}>
               Связываем маркетинг с продажами в одну рабочую систему.
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", marginBottom: "2.5rem" }}>
+            <div className="n-hero-actions" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", marginBottom: "2.5rem" }}>
               <a className="n-btn n-btn-primary" href="#cta">Получить консультацию</a>
               <a className="n-btn n-btn-secondary" href="#approach">Как мы работаем</a>
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.625rem" }}>
+            <div className="n-chips-row" style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
               {[
                 { icon: "BadgeCheck", text: "Сертифицированные партнёры amoCRM" },
                 { icon: "Settings", text: "Настройка под процессы, не по шаблону" },
@@ -234,8 +278,12 @@ function Hero() {
             </div>
           </div>
 
-          {/* Right — System composition */}
-          <HeroVisual />
+          {/* Right — System composition (desktop) */}
+          <div className="hero-visual-desktop">
+            <HeroVisual />
+          </div>
+          {/* Mobile simplified visual */}
+          <HeroVisualMobile />
         </div>
       </div>
     </section>
@@ -713,10 +761,10 @@ function CtaForm() {
 
           {/* Form */}
           <RevealWrapper delay={120}>
-            <div id="form" style={{ background: "var(--clr-card)", border: "1px solid var(--clr-border)", borderRadius: 24, padding: "2.25rem", boxShadow: "var(--shadow-lg)" }}>
+            <div id="form" className="n-form-card" style={{ background: "var(--clr-card)", border: "1px solid var(--clr-border)", borderRadius: 24, padding: "2.25rem", boxShadow: "var(--shadow-lg)" }}>
               <h3 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--clr-text)", marginBottom: "1.5rem" }}>Оставить заявку</h3>
               <form style={{ display: "grid", gap: "1rem" }} onSubmit={e => e.preventDefault()}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.875rem" }}>
+                <div className="n-form-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.875rem" }}>
                   <label style={{ display: "grid", gap: "0.4rem" }}>
                     <span style={{ fontSize: "0.875rem", fontWeight: 500, color: "var(--clr-text)" }}>Имя</span>
                     <input className="n-input" type="text" placeholder="Иван Иванов" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} />

@@ -577,6 +577,14 @@
   transform: translateY(0);
 }
 
+/* Hero visual toggle */
+.hero-visual-desktop {
+  display: block;
+}
+.hero-visual-mobile {
+  display: none;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .n-section-head {
@@ -617,22 +625,146 @@
   }
 }
 
+@media (max-width: 768px) {
+  /* Hidden nav */
+  .hidden-mobile {
+    display: none !important;
+  }
+
+  /* Hero visual swap */
+  .hero-visual-desktop {
+    display: none;
+  }
+  .hero-visual-mobile {
+    display: block !important;
+  }
+
+  /* Hero split: remove gap on mobile since visual is now below */
+  .n-split-hero {
+    gap: 2rem;
+  }
+
+  /* Section spacing */
+  .n-section {
+    padding: clamp(3rem, 7vw, 5rem) 0;
+  }
+
+  /* Section head stacks */
+  .n-section-head {
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Chips — stack vertically */
+  .n-chips-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Steps — 2 columns on tablet */
+  .n-steps-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
+  /* Form grid collapses */
+  .n-form-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Card padding tighter */
+  .n-card {
+    padding: 1.25rem;
+  }
+
+  /* Hero actions: stack buttons */
+  .n-hero-actions {
+    flex-direction: column;
+  }
+  .n-hero-actions .n-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 640px) {
   body {
     font-size: 16px;
   }
+
+  .n-wrap {
+    width: calc(100% - 2rem);
+  }
+
   .n-grid-2,
   .n-grid-3,
   .n-grid-4,
   .n-grid-5 {
     grid-template-columns: 1fr;
+    gap: 0.875rem;
   }
+
   .n-steps-row {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
-  .n-btn {
+
+  /* Buttons full-width */
+  .n-hero-actions .n-btn {
     width: 100%;
     justify-content: center;
+  }
+  .n-btn-primary[type="submit"] {
+    width: 100%;
+  }
+
+  /* Header compact */
+  .n-header-inner {
+    height: 60px !important;
+  }
+
+  /* Section spacing tighter */
+  .n-section {
+    padding: 3rem 0;
+  }
+
+  .n-section-head {
+    margin-bottom: 1.75rem;
+  }
+
+  /* Form card padding */
+  .n-form-card {
+    padding: 1.5rem !important;
+    border-radius: 20px !important;
+  }
+
+  /* Textarea shorter */
+  .n-textarea {
+    min-height: 100px;
+  }
+
+  /* Flow step */
+  .n-flow-step {
+    padding: 1rem 1.25rem;
+  }
+
+  /* CTA split — full column, no overlap */
+  .n-split {
+    gap: 2rem;
+  }
+
+  /* Steps numbers smaller */
+  .n-step-num {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Footer mobile */
+@media (max-width: 640px) {
+  footer {
+    padding: 2rem 0 !important;
   }
 }
 
