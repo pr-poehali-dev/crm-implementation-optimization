@@ -7,7 +7,7 @@ function useReveal() {
     if (!el) return;
     const io = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) el.classList.add("vis"); },
-      { threshold: 0.12 }
+      { threshold: 0.08 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -24,33 +24,67 @@ function R({ children, delay = 0, className = "" }: { children: React.ReactNode;
   );
 }
 
-// ─── Logo SVG ────────────────────────────────────────────────────────────────
-function LogoSvg({ size = 40 }: { size?: number }) {
-  const h = Math.round(size * 0.95);
+// ─── amoCRM Form Modal ────────────────────────────────────────────────────────
+function AmoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  useEffect(() => {
+    if (!open) return;
+    // Load amoCRM script
+    const id = "amoforms_script_1694594";
+    if (!document.getElementById(id)) {
+      // Params script
+      const paramScript = document.createElement("script");
+      paramScript.text = `(function(a,m,o,c,r,m2){a[o+c]=a[o+c]||{setMeta:function(p){this.params=(this.params||[]).concat([p])}};a[o+r]=a[o+r]||function(f){a[o+r].f=(a[o+r].f||[]).concat([f])};a[o+r]({id:"1694594",hash:"2d4097d5e52b9fab2197c975d9345e5b",locale:"ru"});a[o+m2]=a[o+m2]||function(f,k){a[o+m2].f=(a[o+m2].f||[]).concat([[f,k]])}})(window,0,"amo_forms_","params","load","loaded");`;
+      document.head.appendChild(paramScript);
+      // Main script
+      const s = document.createElement("script");
+      s.id = id;
+      s.async = true;
+      s.charset = "utf-8";
+      s.src = "https://forms.amocrm.ru/forms/assets/js/amoforms.js?1775547973";
+      document.head.appendChild(s);
+    }
+  }, [open]);
+
+  if (!open) return null;
+
   return (
-    <svg width={size} height={h} viewBox="0 0 40 38" fill="none" aria-label="Настроено логотип">
-      <defs>
-        <linearGradient id="lgH" x1="20" y1="0" x2="20" y2="38" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#D4E000" />
-          <stop offset="40%" stopColor="#B6E942" />
-          <stop offset="100%" stopColor="#7FAF2B" />
-        </linearGradient>
-      </defs>
-      <path d="M9 13 A13 13 0 1 0 31 13" stroke="url(#lgH)" strokeWidth="3.2" strokeLinecap="round" fill="none" />
-      <line x1="20" y1="2" x2="20" y2="17" stroke="url(#lgH)" strokeWidth="3.2" strokeLinecap="round" />
-      <path d="M15 8 L20 2 L25 8" stroke="url(#lgH)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    </svg>
+    <div className="amo-overlay" onClick={onClose}>
+      <div className="amo-modal" onClick={e => e.stopPropagation()}>
+        <button className="amo-close" onClick={onClose} aria-label="Закрыть">✕</button>
+        <div id="amo-form-container" style={{ minHeight: 300 }} />
+      </div>
+    </div>
+  );
+}
+
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+function Logo({ height = 38 }: { height?: number }) {
+  return (
+    <img
+      src="https://cdn.poehali.dev/projects/8c1b8994-87b1-4169-a832-cc876fc4eb40/bucket/31238491-e26c-466e-a7bb-506e730ecdc8.png"
+      alt="Настроено"
+      height={height}
+      style={{ height, width: "auto", display: "block", objectFit: "contain" }}
+    />
   );
 }
 
 // ─── Header ──────────────────────────────────────────────────────────────────
-function Header() {
+function Header({ onConsult }: { onConsult: () => void }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const close = () => setOpen(false);
-    if (open) document.addEventListener("click", close);
-    return () => document.removeEventListener("click", close);
+    if (open) {
+      document.addEventListener("click", close);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.removeEventListener("click", close);
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   const navLinks = [
@@ -65,14 +99,13 @@ function Header() {
       <header className="site-header">
         <div className="hdr">
           <a href="#" className="brand">
-            <LogoSvg size={40} />
-            <span className="brand-name">Настроено</span>
+            <Logo height={38} />
           </a>
           <nav className="hdr-nav">
             {navLinks.map(([l, h]) => <a key={l} href={h}>{l}</a>)}
           </nav>
           <div className="hdr-right">
-            <a href="#pricing" className="hdr-cta">Получить консультацию</a>
+            <button onClick={onConsult} className="hdr-cta">Получить консультацию</button>
           </div>
           <button
             className={`burger${open ? " open" : ""}`}
@@ -88,19 +121,44 @@ function Header() {
         {navLinks.map(([l, h]) => (
           <a key={l} href={h} onClick={() => setOpen(false)}>{l}</a>
         ))}
-        <a href="#pricing" className="mobile-cta" onClick={() => setOpen(false)}>Консультация</a>
+        <button className="mobile-cta" onClick={() => { setOpen(false); onConsult(); }}>Консультация</button>
       </nav>
     </>
   );
 }
 
-// ─── Power SVG (hero right) ──────────────────────────────────────────────────
+// ─── Power SVG ───────────────────────────────────────────────────────────────
 function PowerScene() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const t = setTimeout(() => ref.current?.classList.add("on"), 600);
     return () => clearTimeout(t);
   }, []);
+
+  const lines = [
+    { id:"psl0", x1:230,y1:195,x2:230,y2:108, dash:90 },
+    { id:"psl1", x1:268,y1:208,x2:348,y2:148, dash:100 },
+    { id:"psl2", x1:268,y1:260,x2:348,y2:318, dash:100 },
+    { id:"psl3", x1:230,y1:275,x2:230,y2:358, dash:85 },
+    { id:"psl4", x1:192,y1:260,x2:112,y2:318, dash:100 },
+    { id:"psl5", x1:192,y1:208,x2:112,y2:148, dash:100 },
+  ];
+  const travellers = [
+    { path:"M230,195 L230,108", dur:"2s", begin:"3.5s" },
+    { path:"M268,208 L348,148", dur:"2s", begin:"4s" },
+    { path:"M268,260 L348,318", dur:"2.2s", begin:"4.3s" },
+    { path:"M230,275 L230,358", dur:"2s", begin:"3.8s" },
+    { path:"M192,260 L112,318", dur:"2.1s", begin:"4.5s" },
+    { path:"M192,208 L112,148", dur:"1.9s", begin:"4.2s" },
+  ];
+  const nodes = [
+    { id:"psn0", tx:230, ty:88, label:"ЛИДЫ", stroke:"#B6E942", w:76, fill:"#B6E942" },
+    { id:"psn1", tx:370, ty:135, label:"amoCRM", stroke:"#B6E942", w:88, fill:"#B6E942" },
+    { id:"psn2", tx:370, ty:332, label:"МЕНЕДЖЕР", stroke:"#D4E000", w:100, fill:"#D4E000" },
+    { id:"psn3", tx:230, ty:376, label:"СДЕЛКА", stroke:"#7FAF2B", w:80, fill:"#7FAF2B" },
+    { id:"psn4", tx:90, ty:332, label:"МАРКЕТИНГ", stroke:"#B6E942", w:100, fill:"#B6E942" },
+    { id:"psn5", tx:90, ty:135, label:"АНАЛИТИКА", stroke:"#D4E000", w:100, fill:"#D4E000" },
+  ];
 
   return (
     <div className="ps-wrap" ref={ref}>
@@ -120,65 +178,34 @@ function PowerScene() {
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
-
-        {/* Grid dots */}
         <g opacity="0.12">
-          {[80,160,240,320,400].map(x => [80,80,80,80,80].map((_, i) => (
-            <circle key={`${x}-${i}`} cx={x} cy={[80,160,240,320,400][i] ?? 80} r="1.5" fill="#B6E942" />
-          )))}
+          {[80,160,240,320,400].flatMap(x =>
+            [80,160,240,320,400].map(y => (
+              <circle key={`${x}-${y}`} cx={x} cy={y} r="1.5" fill="#B6E942" />
+            ))
+          )}
         </g>
-
-        {/* Lines */}
-        {[
-          { id:"psl0", x1:230,y1:195,x2:230,y2:108, dash:90 },
-          { id:"psl1", x1:268,y1:208,x2:348,y2:148, dash:100 },
-          { id:"psl2", x1:268,y1:260,x2:348,y2:318, dash:100 },
-          { id:"psl3", x1:230,y1:275,x2:230,y2:358, dash:85 },
-          { id:"psl4", x1:192,y1:260,x2:112,y2:318, dash:100 },
-          { id:"psl5", x1:192,y1:208,x2:112,y2:148, dash:100 },
-        ].map(l => (
+        {lines.map(l => (
           <line key={l.id} className="ps-line" id={l.id}
             x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
             stroke="#B6E942" strokeWidth="1.5"
             strokeDasharray={l.dash} strokeDashoffset={l.dash} opacity="0.6" />
         ))}
-
-        {/* Travellers */}
-        {[
-          { path:"M230,195 L230,108", dur:"2s", begin:"3.5s" },
-          { path:"M268,208 L348,148", dur:"2s", begin:"4s" },
-          { path:"M268,260 L348,318", dur:"2.2s", begin:"4.3s" },
-          { path:"M230,275 L230,358", dur:"2s", begin:"3.8s" },
-          { path:"M192,260 L112,318", dur:"2.1s", begin:"4.5s" },
-          { path:"M192,208 L112,148", dur:"1.9s", begin:"4.2s" },
-        ].map((t, i) => (
+        {travellers.map((t, i) => (
           <circle key={i} className="ps-traveller" r="3" fill="#F5E200" filter="url(#pgGlow)" opacity="0">
             <animateMotion dur={t.dur} repeatCount="indefinite" begin={t.begin} path={t.path} />
           </circle>
         ))}
-
-        {/* Nodes */}
-        {[
-          { id:"psn0", tx:230, ty:88, label:"ЛИДЫ", stroke:"#B6E942", w:76, fill:"#B6E942" },
-          { id:"psn1", tx:370, ty:135, label:"amoCRM", stroke:"#B6E942", w:88, fill:"#B6E942" },
-          { id:"psn2", tx:370, ty:332, label:"МЕНЕДЖЕР", stroke:"#D4E000", w:100, fill:"#D4E000" },
-          { id:"psn3", tx:230, ty:376, label:"СДЕЛКА", stroke:"#7FAF2B", w:80, fill:"#7FAF2B" },
-          { id:"psn4", tx:90, ty:332, label:"МАРКЕТИНГ", stroke:"#B6E942", w:100, fill:"#B6E942" },
-          { id:"psn5", tx:90, ty:135, label:"АНАЛИТИКА", stroke:"#D4E000", w:100, fill:"#D4E000" },
-        ].map(n => (
+        {nodes.map(n => (
           <g key={n.id} className="ps-node" id={n.id} opacity="0" transform={`translate(${n.tx},${n.ty})`}>
             <rect x={-n.w/2} y="-18" width={n.w} height="36" rx="8" fill="#1E2420" stroke={n.stroke} strokeWidth="1.2" opacity="0.9" />
             <rect x={-n.w/2} y="-18" width={n.w} height="36" rx="8" fill={n.fill} opacity="0.06" />
             <text x="0" y="5" textAnchor="middle" fontFamily="Oswald,sans-serif" fontSize="11" fontWeight="600" fill={n.fill} letterSpacing="1">{n.label}</text>
           </g>
         ))}
-
-        {/* Auras */}
         <circle className="ps-aura" cx="230" cy="230" r="85" stroke="#B6E942" strokeWidth="0.5" opacity="0" />
         <circle className="ps-aura2" cx="230" cy="230" r="105" stroke="#B6E942" strokeWidth="0.3" opacity="0" />
-
-        {/* Center */}
-        <circle cx="230" cy="230" r="68" fill="#1a1e1b" stroke="rgba(182,233,66,0.08)" strokeWidth="1" />
+        <circle cx="230" cy="230" r="68" fill="#0e1210" stroke="rgba(182,233,66,0.08)" strokeWidth="1" />
         <circle className="ps-ring-draw" cx="230" cy="240" r="44" stroke="url(#pgGrad)" strokeWidth="4" strokeLinecap="round" filter="url(#pgGlow)" strokeDasharray="198 88" strokeDashoffset="286" transform="rotate(-90 230 240)" />
         <line className="ps-vline-draw" x1="230" y1="196" x2="230" y2="240" stroke="url(#pgGrad)" strokeWidth="4" strokeLinecap="round" strokeDasharray="44" strokeDashoffset="44" filter="url(#pgGlow)" />
         <path className="ps-arrow-draw" d="M218 213 L230 199 L242 213" stroke="url(#pgGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="30" strokeDashoffset="30" fill="none" filter="url(#pgGlow)" />
@@ -192,8 +219,99 @@ function PowerScene() {
   );
 }
 
+// ─── Inline SVG icons ─────────────────────────────────────────────────────────
+function IcoTrend() {
+  return (
+    <svg className="q-svg-ico" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="24" fill="rgba(182,233,66,0.08)" />
+      <polyline points="8,34 18,22 26,28 40,14" stroke="#B6E942" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points="32,14 40,14 40,22" stroke="#B6E942" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="8" y1="38" x2="40" y2="38" stroke="rgba(182,233,66,0.25)" strokeWidth="1.5" strokeDasharray="3 3" />
+      <circle cx="40" cy="14" r="3" fill="#B6E942" />
+      <circle cx="18" cy="22" r="2.5" fill="#D4E000" opacity="0.7" />
+      <circle cx="26" cy="28" r="2.5" fill="#D4E000" opacity="0.7" />
+      <circle cx="8" cy="34" r="2.5" fill="#7FAF2B" opacity="0.7" />
+    </svg>
+  );
+}
+function IcoConflict() {
+  return (
+    <svg className="q-svg-ico" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="24" fill="rgba(182,233,66,0.08)" />
+      <circle cx="15" cy="20" r="6" stroke="#B6E942" strokeWidth="2" fill="none" />
+      <circle cx="33" cy="20" r="6" stroke="#D4E000" strokeWidth="2" fill="none" />
+      <path d="M9 32 C9 28 12 26 15 26" stroke="#B6E942" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M39 32 C39 28 36 26 33 26" stroke="#D4E000" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <line x1="24" y1="14" x2="24" y2="34" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" strokeDasharray="3 3" />
+      <path d="M21 24 L24 27 L27 24" stroke="#7FAF2B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+function IcoCrm() {
+  return (
+    <svg className="q-svg-ico" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="24" fill="rgba(182,233,66,0.08)" />
+      <rect x="10" y="12" width="28" height="24" rx="4" stroke="#B6E942" strokeWidth="2" fill="none" />
+      <line x1="10" y1="18" x2="38" y2="18" stroke="#B6E942" strokeWidth="1.5" opacity="0.5" />
+      <rect x="15" y="22" width="8" height="2.5" rx="1" fill="rgba(182,233,66,0.4)" />
+      <rect x="15" y="27" width="14" height="2.5" rx="1" fill="rgba(182,233,66,0.25)" />
+      <rect x="15" y="32" width="5" height="2.5" rx="1" fill="rgba(182,233,66,0.15)" />
+      <circle cx="35" cy="30" r="4" stroke="#D4E000" strokeWidth="1.5" fill="none" strokeDasharray="3 2" />
+      <line x1="35" y1="27" x2="35" y2="30" stroke="#D4E000" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="35" y1="30" x2="37" y2="32" stroke="#D4E000" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// Honesty icons
+function IcoNoReviews() {
+  return (
+    <svg className="hon-svg-ico" viewBox="0 0 48 48" fill="none">
+      <circle cx="24" cy="24" r="24" fill="rgba(182,233,66,0.06)" />
+      <path d="M14 18 L34 18 L34 34 L24 30 L14 34 Z" stroke="#B6E942" strokeWidth="2" fill="none" strokeLinejoin="round" />
+      <line x1="16" y1="16" x2="32" y2="36" stroke="#ff6b6b" strokeWidth="2" strokeLinecap="round" />
+      <line x1="32" y1="16" x2="16" y2="36" stroke="#ff6b6b" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IcoPhone() {
+  return (
+    <svg className="hon-svg-ico" viewBox="0 0 48 48" fill="none">
+      <circle cx="24" cy="24" r="24" fill="rgba(182,233,66,0.06)" />
+      <path d="M16 14 C16 14 18 14 19 16 L21 20 C21.5 21.5 21 22.5 20 23.5 C19 24.5 21 27 23.5 29.5 C26 32 28.5 34 29.5 33 C30.5 32 31.5 31.5 33 32 L37 34 C39 35 39 37 39 37" stroke="#B6E942" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+      <circle cx="33" cy="17" r="5" stroke="#D4E000" strokeWidth="1.5" fill="none" />
+      <line x1="33" y1="15" x2="33" y2="17" stroke="#D4E000" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="33" cy="18.5" r="0.8" fill="#D4E000" />
+    </svg>
+  );
+}
+function IcoNoPromise() {
+  return (
+    <svg className="hon-svg-ico" viewBox="0 0 48 48" fill="none">
+      <circle cx="24" cy="24" r="24" fill="rgba(182,233,66,0.06)" />
+      <polyline points="10,34 17,25 23,30 38,13" stroke="#B6E942" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="36" y1="13" x2="42" y2="19" stroke="#ff6b6b" strokeWidth="2" strokeLinecap="round" />
+      <line x1="42" y1="13" x2="36" y2="19" stroke="#ff6b6b" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IcoTarget() {
+  return (
+    <svg className="hon-svg-ico" viewBox="0 0 48 48" fill="none">
+      <circle cx="24" cy="24" r="24" fill="rgba(182,233,66,0.06)" />
+      <circle cx="24" cy="24" r="13" stroke="rgba(182,233,66,0.3)" strokeWidth="1.5" fill="none" />
+      <circle cx="24" cy="24" r="8" stroke="rgba(182,233,66,0.6)" strokeWidth="1.5" fill="none" />
+      <circle cx="24" cy="24" r="3.5" fill="#B6E942" />
+      <line x1="24" y1="8" x2="24" y2="11" stroke="#B6E942" strokeWidth="2" strokeLinecap="round" />
+      <line x1="24" y1="37" x2="24" y2="40" stroke="#B6E942" strokeWidth="2" strokeLinecap="round" />
+      <line x1="8" y1="24" x2="11" y2="24" stroke="#B6E942" strokeWidth="2" strokeLinecap="round" />
+      <line x1="37" y1="24" x2="40" y2="24" stroke="#B6E942" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // ─── Hero ────────────────────────────────────────────────────────────────────
-function Hero() {
+function Hero({ onConsult }: { onConsult: () => void }) {
   return (
     <section className="hero">
       <div className="hero-inner">
@@ -207,7 +325,7 @@ function Hero() {
           </R>
           <R delay={200}>
             <div className="hero-btns">
-              <a href="#pricing" className="btn-lime">→ Получить консультацию</a>
+              <button onClick={onConsult} className="btn-lime">→ Получить консультацию</button>
               <a href="#pricing" className="btn-ghost">Узнать стоимость</a>
             </div>
           </R>
@@ -248,9 +366,9 @@ function Ticker() {
 // ─── Qual ─────────────────────────────────────────────────────────────────────
 function Qual() {
   const cards = [
-    { ico: "📉", title: "Лиды есть — продажи не растут", text: "Заявки приходят, деньги на рекламу уходят, а где деньги теряются — непонятно." },
-    { ico: "⚡", title: "Маркетинг и продажи — вечные споры", text: "Маркетологи дают трафик. Менеджеры говорят, что трафик не целевой. Крайних нет, проблема остаётся." },
-    { ico: "📋", title: "CRM есть, но не работает", text: "Систему завели, деньги заплатили — а менеджеры всё равно ведут клиентов в голове или в блокноте." },
+    { ico: <IcoTrend />, title: "Лиды есть — продажи не растут", text: "Заявки приходят, деньги на рекламу уходят, а где деньги теряются — непонятно." },
+    { ico: <IcoConflict />, title: "Маркетинг и продажи — вечные споры", text: "Маркетологи дают трафик. Менеджеры говорят, что трафик не целевой. Крайних нет, проблема остаётся." },
+    { ico: <IcoCrm />, title: "CRM есть, но не работает", text: "Систему завели, деньги заплатили — а менеджеры всё равно ведут клиентов в голове или в блокноте." },
   ];
   return (
     <section className="sec sec-white" id="qual">
@@ -259,9 +377,9 @@ function Qual() {
         <R delay={100}><h2 className="h2">Почему продажи не растут</h2></R>
         <div className="q-grid">
           {cards.map((c, i) => (
-            <R key={c.title} delay={100 + i * 150}>
+            <R key={i} delay={100 + i * 150}>
               <div className="q-card">
-                <span className="q-ico">{c.ico}</span>
+                {c.ico}
                 <h3>{c.title}</h3>
                 <p>{c.text}</p>
               </div>
@@ -362,10 +480,10 @@ function Process() {
 // ─── Honesty ──────────────────────────────────────────────────────────────────
 function Honesty() {
   const cards = [
-    { mark: "🚫", title: "Нет пачки отзывов", text: "Отзывы пишут в двух случаях: когда очень разозлились или когда попросили за деньги. Ни то ни другое нам не подходит." },
-    { mark: "📞", title: "Вместо отзывов — живые контакты", text: "Мы дадим телефоны клиентов. Можно позвонить, поговорить, спросить всё что угодно. Это честнее любого скриншота с пятью звёздами." },
-    { mark: "📊", title: "Не обещаем рост x2", text: "Результат зависит от вашей команды, продукта, рынка — и от нас тоже. Мы говорим об этом заранее, а не после." },
-    { mark: "🎯", title: "Цена за погружение, не за скорость", text: "Мы не делаем 10 проектов в месяц. Каждый проект — отдельная история, в которую нужно вникнуть. Поэтому цена такая, какая есть." },
+    { ico: <IcoNoReviews />, title: "Нет пачки отзывов", text: "Отзывы пишут в двух случаях: когда очень разозлились или когда попросили за деньги. Ни то ни другое нам не подходит." },
+    { ico: <IcoPhone />, title: "Вместо отзывов — живые контакты", text: "Мы дадим телефоны клиентов. Можно позвонить, поговорить, спросить всё что угодно. Это честнее любого скриншота с пятью звёздами." },
+    { ico: <IcoNoPromise />, title: "Не обещаем рост x2", text: "Результат зависит от вашей команды, продукта, рынка — и от нас тоже. Мы говорим об этом заранее, а не после." },
+    { ico: <IcoTarget />, title: "Цена за погружение, не за скорость", text: "Мы не делаем 10 проектов в месяц. Каждый проект — отдельная история, в которую нужно вникнуть. Поэтому цена такая, какая есть." },
   ];
   return (
     <section className="sec sec-white" id="honesty">
@@ -374,9 +492,9 @@ function Honesty() {
         <R delay={100}><h2 className="h2">Скажем прямо — у нас нет того,<br />что есть у всех</h2></R>
         <div className="hon-grid">
           {cards.map((c, i) => (
-            <R key={c.title} delay={100 + i * 100}>
+            <R key={i} delay={100 + i * 100}>
               <div className="hon-card">
-                <span className="hon-mark">{c.mark}</span>
+                {c.ico}
                 <h3>{c.title}</h3>
                 <p>{c.text}</p>
               </div>
@@ -389,7 +507,7 @@ function Honesty() {
 }
 
 // ─── Pricing ──────────────────────────────────────────────────────────────────
-function Pricing() {
+function Pricing({ onConsult }: { onConsult: () => void }) {
   const rows = [
     { what: "Базовая настройка: воронки, поля, права, сайт, почта", price: "от 40 000 ₽" },
     { what: "С автоматизациями, мессенджерами, телефонией", price: "от 50 000 ₽" },
@@ -402,22 +520,21 @@ function Pricing() {
         <R delay={100}><h2 className="h2">Что и сколько стоит</h2></R>
         <R delay={200}><p className="sec-lead">Настройка — разово</p></R>
         <R delay={200}>
-          <table className="pr-table">
-            <thead>
-              <tr>
-                <th>Что делаем</th>
-                <th>Стоимость</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(r => (
-                <tr key={r.what}>
-                  <td>{r.what}</td>
-                  <td><span className="pr-price">{r.price}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="pr-table-wrap">
+            <table className="pr-table">
+              <thead>
+                <tr><th>Что делаем</th><th>Стоимость</th></tr>
+              </thead>
+              <tbody>
+                {rows.map(r => (
+                  <tr key={r.what}>
+                    <td>{r.what}</td>
+                    <td><span className="pr-price">{r.price}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </R>
         <R delay={350}>
           <div className="pr-note">
@@ -426,8 +543,8 @@ function Pricing() {
         </R>
         <R delay={350}>
           <div className="pr-cta">
-            <a href="mailto:neurocontent.wave@gmail.com" className="btn-lime">→ Получить консультацию</a>
-            <a href="mailto:neurocontent.wave@gmail.com" className="btn-ghost">Написать нам</a>
+            <button onClick={onConsult} className="btn-lime">→ Получить консультацию</button>
+            <button onClick={onConsult} className="btn-ghost">Написать нам</button>
           </div>
         </R>
       </div>
@@ -441,8 +558,7 @@ function Footer() {
     <footer className="site-footer">
       <div className="ftr">
         <div className="ftr-brand">
-          <LogoSvg size={32} />
-          <span className="ftr-name">Настроено</span>
+          <Logo height={30} />
         </div>
         <div className="ftr-links">
           {[["Проблемы","#qual"],["О нас","#team"],["Как работаем","#process"],["Цены","#pricing"]].map(([l,h]) => (
@@ -460,18 +576,21 @@ function Footer() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function Index() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <>
-      <Header />
+      <AmoModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <Header onConsult={() => setModalOpen(true)} />
       <main>
-        <Hero />
+        <Hero onConsult={() => setModalOpen(true)} />
         <Ticker />
         <Qual />
         <Challenge />
         <Team />
         <Process />
         <Honesty />
-        <Pricing />
+        <Pricing onConsult={() => setModalOpen(true)} />
       </main>
       <Footer />
     </>

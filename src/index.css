@@ -205,7 +205,7 @@ img {
 
 /* ─── Hero ───────────────────────────────────────────────────────────────────── */
 .hero {
-  background: var(--graphite-2);
+  background: #0e1210;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -872,6 +872,173 @@ h2.h2 {
   display: block;
 }
 
+/* ─── SVG Icons (Qual + Honesty) ──────────────────────────────────────────── */
+.q-svg-ico,
+.hon-svg-ico {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 20px;
+  display: block;
+  animation: ico-pulse 3s ease-in-out infinite;
+}
+.q-svg-ico {
+  animation-delay: 0s;
+}
+.hon-svg-ico {
+  animation-delay: 0.4s;
+}
+@keyframes ico-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(182, 233, 66, 0.3));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(182, 233, 66, 0.7));
+    transform: scale(1.04);
+  }
+}
+
+/* ─── amoCRM Modal ────────────────────────────────────────────────────────── */
+.amo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(10, 14, 11, 0.82);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.amo-modal {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 36px 36px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s var(--ease);
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.amo-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.amo-close:hover {
+  background: var(--border);
+  color: var(--graphite);
+}
+
+/* Mobile-nav button reset */
+.mobile-nav button.mobile-cta {
+  background: var(--lime);
+  color: var(--graphite);
+  padding: 16px 40px;
+  border-radius: 100px;
+  font-family: var(--font-h);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: var(--lime-glow);
+  border: none;
+  cursor: pointer;
+}
+
+/* hdr-cta as button */
+button.hdr-cta {
+  background: var(--lime);
+  color: var(--graphite);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 22px;
+  border-radius: 100px;
+  transition: all 0.22s var(--ease);
+  box-shadow: var(--lime-glow-sm);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-b);
+}
+button.hdr-cta:hover {
+  box-shadow: var(--lime-glow);
+  transform: translateY(-1px);
+}
+button.btn-lime {
+  background: var(--lime);
+  color: var(--graphite);
+  font-weight: 800;
+  font-size: 14px;
+  padding: 14px 28px;
+  border-radius: 100px;
+  box-shadow: var(--lime-glow);
+  transition: all 0.22s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-b);
+}
+button.btn-lime:hover {
+  box-shadow:
+    0 0 28px rgba(182, 233, 66, 0.65),
+    0 0 60px rgba(182, 233, 66, 0.25);
+  transform: translateY(-2px);
+}
+button.btn-ghost {
+  background: transparent;
+  color: rgba(251, 251, 248, 0.7);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 14px 28px;
+  border-radius: 100px;
+  border: 1px solid rgba(251, 251, 248, 0.15);
+  transition: all 0.22s var(--ease);
+  cursor: pointer;
+  font-family: var(--font-b);
+}
+button.btn-ghost:hover {
+  border-color: rgba(182, 233, 66, 0.4);
+  color: #fbfbf8;
+}
+
 /* ─── Pricing ────────────────────────────────────────────────────────────────── */
 .sec-pricing {
   background: var(--graphite-2);
@@ -1071,12 +1238,17 @@ h2.h2 {
   .team-grid {
     grid-template-columns: 1fr;
   }
+  .hon-grid {
+    grid-template-columns: 1fr;
+  }
   .pr-cta {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
   }
   .pr-cta .btn-lime,
-  .pr-cta .btn-ghost {
+  .pr-cta .btn-ghost,
+  .pr-cta button.btn-lime,
+  .pr-cta button.btn-ghost {
     width: 100%;
     justify-content: center;
   }
@@ -1084,8 +1256,66 @@ h2.h2 {
     flex-direction: column;
   }
   .hero-btns .btn-lime,
-  .hero-btns .btn-ghost {
+  .hero-btns .btn-ghost,
+  .hero-btns button.btn-lime,
+  .hero-btns button.btn-ghost {
     width: 100%;
     justify-content: center;
+  }
+  /* Pricing table scroll on mobile */
+  .pr-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pr-table {
+    min-width: 480px;
+  }
+  /* Modal full-screen on mobile */
+  .amo-modal {
+    padding: 32px 20px 24px;
+    border-radius: 16px;
+  }
+  /* SVG anim: disable heavy filters on mobile */
+  .ps-wrap {
+    max-width: 300px;
+  }
+  /* Reduce icon animation on mobile for perf */
+  .q-svg-ico,
+  .hon-svg-ico {
+    animation-duration: 4s;
+  }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .r {
+    transition: none;
+  }
+  .r.vis {
+    opacity: 1;
+    transform: none;
+  }
+  .ps-ring-draw,
+  .ps-vline-draw,
+  .ps-arrow-draw,
+  .ps-line {
+    transition: none;
+  }
+  .ps-aura,
+  .ps-aura2 {
+    animation: none;
+  }
+  .ticker-inner {
+    animation-duration: 40s;
+  }
+  .q-svg-ico,
+  .hon-svg-ico {
+    animation: none;
+  }
+  @keyframes ambient {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
   }
 }
