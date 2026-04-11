@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+// useState used in Header
 
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -24,47 +25,19 @@ function R({ children, delay = 0, className = "" }: { children: React.ReactNode;
   );
 }
 
-// ─── amoCRM Form Modal ────────────────────────────────────────────────────────
-function AmoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  useEffect(() => {
-    if (!open) return;
-    // Load amoCRM script
-    const id = "amoforms_script_1694594";
-    if (!document.getElementById(id)) {
-      // Params script
-      const paramScript = document.createElement("script");
-      paramScript.text = `(function(a,m,o,c,r,m2){a[o+c]=a[o+c]||{setMeta:function(p){this.params=(this.params||[]).concat([p])}};a[o+r]=a[o+r]||function(f){a[o+r].f=(a[o+r].f||[]).concat([f])};a[o+r]({id:"1694594",hash:"2d4097d5e52b9fab2197c975d9345e5b",locale:"ru"});a[o+m2]=a[o+m2]||function(f,k){a[o+m2].f=(a[o+m2].f||[]).concat([[f,k]])}})(window,0,"amo_forms_","params","load","loaded");`;
-      document.head.appendChild(paramScript);
-      // Main script
-      const s = document.createElement("script");
-      s.id = id;
-      s.async = true;
-      s.charset = "utf-8";
-      s.src = "https://forms.amocrm.ru/forms/assets/js/amoforms.js?1775547973";
-      document.head.appendChild(s);
-    }
-  }, [open]);
+const AMO_FORM_URL = "https://forms.amocrm.ru/rcxdwxd";
 
-  if (!open) return null;
-
-  return (
-    <div className="amo-overlay" onClick={onClose}>
-      <div className="amo-modal" onClick={e => e.stopPropagation()}>
-        <button className="amo-close" onClick={onClose} aria-label="Закрыть">✕</button>
-        <div id="amo-form-container" style={{ minHeight: 300 }} />
-      </div>
-    </div>
-  );
+function openConsult() {
+  window.open(AMO_FORM_URL, "_blank", "noopener,noreferrer");
 }
 
 // ─── Logo ─────────────────────────────────────────────────────────────────────
-function Logo({ height = 38 }: { height?: number }) {
+function Logo({ height = 44 }: { height?: number }) {
   return (
     <img
       src="https://cdn.poehali.dev/projects/8c1b8994-87b1-4169-a832-cc876fc4eb40/bucket/31238491-e26c-466e-a7bb-506e730ecdc8.png"
       alt="Настроено"
-      height={height}
-      style={{ height, width: "auto", display: "block", objectFit: "contain" }}
+      style={{ height, width: "auto", display: "block", objectFit: "contain", mixBlendMode: "lighten" }}
     />
   );
 }
@@ -508,43 +481,47 @@ function Honesty() {
 
 // ─── Pricing ──────────────────────────────────────────────────────────────────
 function Pricing({ onConsult }: { onConsult: () => void }) {
-  const rows = [
-    { what: "Базовая настройка: воронки, поля, права, сайт, почта", price: "от 40 000 ₽" },
-    { what: "С автоматизациями, мессенджерами, телефонией", price: "от 50 000 ₽" },
-    { what: "Комплексное внедрение под ключ", price: "от 100 000 ₽" },
+  const plans = [
+    {
+      tag: "Базовая",
+      title: "Базовая настройка",
+      desc: "Воронки, поля, права, подключение сайта и почты. Всё для старта.",
+      price: "от 40 000 ₽",
+    },
+    {
+      tag: "Стандарт",
+      title: "С автоматизациями",
+      desc: "Автоматизации, мессенджеры, телефония, интеграции. Система начинает работать сама.",
+      price: "от 50 000 ₽",
+    },
+    {
+      tag: "Под ключ",
+      title: "Комплексное внедрение",
+      desc: "Полный аудит процессов, проектирование, настройка, обучение команды, поддержка после запуска.",
+      price: "от 100 000 ₽",
+    },
   ];
   return (
     <section className="sec sec-pricing" id="pricing">
       <div className="wrap">
-        <R><div className="sec-eye">Стоимость</div></R>
+        <R><div className="sec-eye">Услуги и цены</div></R>
         <R delay={100}><h2 className="h2">Что и сколько стоит</h2></R>
-        <R delay={200}><p className="sec-lead">Настройка — разово</p></R>
-        <R delay={200}>
-          <div className="pr-table-wrap">
-            <table className="pr-table">
-              <thead>
-                <tr><th>Что делаем</th><th>Стоимость</th></tr>
-              </thead>
-              <tbody>
-                {rows.map(r => (
-                  <tr key={r.what}>
-                    <td>{r.what}</td>
-                    <td><span className="pr-price">{r.price}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </R>
-        <R delay={350}>
+        <div className="pricing-grid">
+          {plans.map((p, i) => (
+            <R key={p.tag} delay={100 + i * 120}>
+              <div className="pr-card">
+                <div className="pr-card-tag">{p.tag}</div>
+                <h3 className="pr-card-title">{p.title}</h3>
+                <p className="pr-card-desc">{p.desc}</p>
+                <div className="pr-card-price">{p.price}</div>
+                <button onClick={onConsult} className="pr-card-btn">Обсудить</button>
+              </div>
+            </R>
+          ))}
+        </div>
+        <R delay={400}>
           <div className="pr-note">
             <p>После: заявки не теряются, менеджеры работают по алгоритму, руководитель видит реальные цифры — не то, что ему говорят.</p>
-          </div>
-        </R>
-        <R delay={350}>
-          <div className="pr-cta">
-            <button onClick={onConsult} className="btn-lime">→ Получить консультацию</button>
-            <button onClick={onConsult} className="btn-ghost">Написать нам</button>
           </div>
         </R>
       </div>
@@ -576,21 +553,18 @@ function Footer() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function Index() {
-  const [modalOpen, setModalOpen] = useState(false);
-
   return (
     <>
-      <AmoModal open={modalOpen} onClose={() => setModalOpen(false)} />
-      <Header onConsult={() => setModalOpen(true)} />
+      <Header onConsult={openConsult} />
       <main>
-        <Hero onConsult={() => setModalOpen(true)} />
+        <Hero onConsult={openConsult} />
         <Ticker />
         <Qual />
         <Challenge />
         <Team />
         <Process />
         <Honesty />
-        <Pricing onConsult={() => setModalOpen(true)} />
+        <Pricing onConsult={openConsult} />
       </main>
       <Footer />
     </>
