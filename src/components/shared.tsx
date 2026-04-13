@@ -33,9 +33,9 @@ export function R({ children, delay = 0, className = "" }: { children: React.Rea
 export function Logo({ height = 44 }: { height?: number }) {
   return (
     <img
-      src="https://cdn.poehali.dev/projects/8c1b8994-87b1-4169-a832-cc876fc4eb40/bucket/31238491-e26c-466e-a7bb-506e730ecdc8.png"
+      src="https://cdn.poehali.dev/projects/8c1b8994-87b1-4169-a832-cc876fc4eb40/bucket/5266d917-8967-40e9-a1d8-abfc7a1bf513.png"
       alt="Настроено"
-      style={{ height, width: "auto", display: "block", objectFit: "contain", mixBlendMode: "lighten" }}
+      style={{ height, width: "auto", display: "block", objectFit: "contain" }}
     />
   );
 }
