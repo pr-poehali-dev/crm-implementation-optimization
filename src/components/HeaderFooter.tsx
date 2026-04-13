@@ -31,7 +31,7 @@ export function Header({ onConsult }: { onConsult: () => void }) {
       <header className="site-header">
         <div className="hdr">
           <a href="#" className="brand">
-            <Logo height={120} />
+            <Logo height={80} />
           </a>
           <nav className="hdr-nav">
             {navLinks.map(([l, h]) => <a key={l} href={h}>{l}</a>)}
