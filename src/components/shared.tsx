@@ -35,7 +35,7 @@ export function Logo({ height = 44 }: { height?: number }) {
     <img
       src="https://cdn.poehali.dev/projects/8c1b8994-87b1-4169-a832-cc876fc4eb40/bucket/5266d917-8967-40e9-a1d8-abfc7a1bf513.png"
       alt="Настроено"
-      style={{ height, width: "auto", display: "block", objectFit: "contain" }}
+      style={{ height, width: "auto", display: "block", objectFit: "contain", filter: "invert(1) brightness(2)" }}
     />
   );
 }
