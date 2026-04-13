@@ -298,8 +298,8 @@ function Hero({ onConsult }: { onConsult: () => void }) {
           </R>
           <R delay={200}>
             <div className="hero-btns">
-              <button onClick={onConsult} className="btn-lime">→ Получить консультацию</button>
-              <a href="#pricing" className="btn-ghost">Узнать стоимость</a>
+              <button onClick={onConsult} className="btn-lime" aria-label="Получить бесплатную консультацию по внедрению amoCRM">→ Получить консультацию</button>
+              <a href="#pricing" className="btn-ghost" aria-label="Посмотреть стоимость услуг">Узнать стоимость</a>
             </div>
           </R>
           <R delay={350}>
@@ -514,7 +514,7 @@ function Pricing({ onConsult }: { onConsult: () => void }) {
                 <h3 className="pr-card-title">{p.title}</h3>
                 <p className="pr-card-desc">{p.desc}</p>
                 <div className="pr-card-price">{p.price}</div>
-                <button onClick={onConsult} className="pr-card-btn">Обсудить</button>
+                <button onClick={onConsult} className="pr-card-btn" aria-label={`Обсудить тариф: ${p.title}`}>Обсудить</button>
               </div>
             </R>
           ))}
