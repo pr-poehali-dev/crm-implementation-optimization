@@ -72,7 +72,7 @@ img {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 clamp(1rem, 3vw, 2.5rem);
-  height: 96px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
