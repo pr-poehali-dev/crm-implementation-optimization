@@ -31,7 +31,7 @@ export function Header({ onConsult }: { onConsult: () => void }) {
       <header className="site-header">
         <div className="hdr">
           <a href="#" className="brand">
-            <Logo height={120} />
+            <Logo height={76} />
           </a>
           <nav className="hdr-nav">
             {navLinks.map(([l, h]) => <a key={l} href={h}>{l}</a>)}
@@ -65,7 +65,7 @@ export function Footer() {
     <footer className="site-footer">
       <div className="ftr">
         <div className="ftr-brand">
-          <Logo height={90} />
+          <Logo height={60} />
         </div>
         <div className="ftr-links">
           {[["Проблемы","#qual"],["О нас","#team"],["Как работаем","#process"],["Цены","#pricing"]].map(([l,h]) => (
