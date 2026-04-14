@@ -31,7 +31,7 @@ export function Header({ onConsult }: { onConsult: () => void }) {
       <header className="site-header">
         <div className="hdr">
           <a href="#" className="brand">
-            <Logo height={120} />
+            <Logo height={40} />
           </a>
           <nav className="hdr-nav">
             {navLinks.map(([l, h]) => <a key={l} href={h}>{l}</a>)}
@@ -65,7 +65,7 @@ export function Footer() {
     <footer className="site-footer">
       <div className="ftr">
         <div className="ftr-brand">
-          <Logo height={90} />
+          <Logo height={110} />
         </div>
         <div className="ftr-links">
           {[["Проблемы","#qual"],["О нас","#team"],["Как работаем","#process"],["Цены","#pricing"]].map(([l,h]) => (
@@ -74,7 +74,7 @@ export function Footer() {
         </div>
         <div className="ftr-contact">
           <a href="mailto:neurocontent.wave@gmail.com" className="ftr-mail">neurocontent.wave@gmail.com</a>
-          <span className="ftr-legal">© 2025 Настроено. Все права защищены.</span>
+          <span className="ftr-legal">© 2026 Настроено. Все права защищены.</span>
         </div>
       </div>
     </footer>
