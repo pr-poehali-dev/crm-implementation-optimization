@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Logo, R } from "@/components/shared";
+import { R } from "@/components/shared";
 
 // ─── Header ──────────────────────────────────────────────────────────────────
 export function Header({ onConsult }: { onConsult: () => void }) {
@@ -31,7 +31,11 @@ export function Header({ onConsult }: { onConsult: () => void }) {
       <header className="site-header">
         <div className="hdr">
           <a href="#" className="brand">
-            <Logo height={40} />
+            <img
+              src="https://cdn.poehali.dev/projects/8c1b8994-87b1-4169-a832-cc876fc4eb40/bucket/0e7f628c-ddff-44da-a743-3f664874f9c7.png"
+              alt="Настроено"
+              style={{ height: 40, width: "auto", display: "block", objectFit: "contain" }}
+            />
           </a>
           <nav className="hdr-nav">
             {navLinks.map(([l, h]) => <a key={l} href={h}>{l}</a>)}
@@ -64,9 +68,6 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="ftr">
-        <div className="ftr-brand">
-          <Logo height={110} />
-        </div>
         <div className="ftr-links">
           {[["Проблемы","#qual"],["О нас","#team"],["Как работаем","#process"],["Цены","#pricing"]].map(([l,h]) => (
             <a key={l} href={h}>{l}</a>
