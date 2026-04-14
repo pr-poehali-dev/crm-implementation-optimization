@@ -358,23 +358,6 @@ h1.h1 .accent {
   border-color: rgba(182, 233, 66, 0.4);
   color: #fbfbf8;
 }
-.btn-tg {
-  background: #229ed9;
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 14px 24px;
-  border-radius: 100px;
-  transition: all 0.22s var(--ease);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.btn-tg:hover {
-  background: #1a8bbf;
-  transform: translateY(-2px);
-  box-shadow: 0 0 24px rgba(34, 158, 217, 0.45);
-}
 .hero-badges {
   display: flex;
   flex-wrap: wrap;
