@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PrivacyModal from "@/components/PrivacyModal";
 import { R } from "@/components/shared";
 
 const TG_BOT = "https://t.me/Nastroeno_bot";
@@ -86,24 +87,30 @@ export function Header({ onConsult }: { onConsult: () => void }) {
 }
 
 export function Footer() {
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   return (
-    <footer className="site-footer">
-      <div className="ftr">
-        <div className="ftr-links">
-          {[["Проблемы","#qual"],["О нас","#team"],["Как работаем","#process"],["Цены","#pricing"]].map(([l,h]) => (
-            <a key={l} href={h}>{l}</a>
-          ))}
+    <>
+      <footer className="site-footer">
+        <div className="ftr">
+          <div className="ftr-links">
+            {[["Проблемы","#qual"],["О нас","#team"],["Как работаем","#process"],["Цены","#pricing"]].map(([l,h]) => (
+              <a key={l} href={h}>{l}</a>
+            ))}
+          </div>
+          <div className="ftr-contact">
+            <a href="mailto:neurocontent.wave@gmail.com" className="ftr-mail">neurocontent.wave@gmail.com</a>
+            <a href={TG_BOT} target="_blank" rel="noopener noreferrer" className="ftr-tg">
+              <TgIcon size={13} /> Написать в Telegram
+            </a>
+            <button className="ftr-privacy" onClick={() => setPrivacyOpen(true)}>
+              Политика конфиденциальности
+            </button>
+            <span className="ftr-legal">© 2026 Настроено. Все права защищены.</span>
+          </div>
         </div>
-        <div className="ftr-contact">
-          <a href="mailto:neurocontent.wave@gmail.com" className="ftr-mail">neurocontent.wave@gmail.com</a>
-          <a href={TG_BOT} target="_blank" rel="noopener noreferrer" className="ftr-tg">
-            <TgIcon size={13} /> Написать в Telegram
-          </a>
-          <a href="/privacy" className="ftr-privacy">Политика конфиденциальности</a>
-          <span className="ftr-legal">© 2026 Настроено. Все права защищены.</span>
-        </div>
-      </div>
-    </footer>
+      </footer>
+      {privacyOpen && <PrivacyModal onClose={() => setPrivacyOpen(false)} />}
+    </>
   );
 }
 
