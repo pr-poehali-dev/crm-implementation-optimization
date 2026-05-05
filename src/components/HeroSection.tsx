@@ -1,93 +1,328 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { R } from "@/components/shared";
 
-// ─── Power SVG ───────────────────────────────────────────────────────────────
-function PowerScene() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const t = setTimeout(() => ref.current?.classList.add("on"), 600);
-    return () => clearTimeout(t);
+// ─── CRM Game ────────────────────────────────────────────────────────────────
+type NodeId = "leads" | "amocrm" | "manager" | "deal" | "marketing" | "analytics";
+
+interface NodeDef {
+  id: NodeId;
+  label: string;
+  x: number;
+  y: number;
+  color: string;
+  icon: string;
+}
+
+const NODES: NodeDef[] = [
+  { id: "leads",     label: "ЛИДЫ",      x: 230, y: 68,  color: "#B6E942", icon: "📥" },
+  { id: "amocrm",    label: "amoCRM",    x: 370, y: 150, color: "#B6E942", icon: "⚡" },
+  { id: "manager",   label: "МЕНЕДЖЕР",  x: 370, y: 310, color: "#D4E000", icon: "👤" },
+  { id: "deal",      label: "СДЕЛКА",    x: 230, y: 390, color: "#7FAF2B", icon: "💰" },
+  { id: "marketing", label: "МАРКЕТИНГ", x: 90,  y: 310, color: "#B6E942", icon: "📊" },
+  { id: "analytics", label: "АНАЛИТИКА", x: 90,  y: 150, color: "#D4E000", icon: "📈" },
+];
+
+const EDGES: [NodeId, NodeId][] = [
+  ["leads",     "amocrm"],
+  ["amocrm",    "manager"],
+  ["manager",   "deal"],
+  ["deal",      "marketing"],
+  ["marketing", "analytics"],
+  ["analytics", "leads"],
+];
+
+const CHAOS_MESSAGES: Record<NodeId, string> = {
+  leads:     "Лиды приходят — и пропадают никуда",
+  amocrm:    "CRM выключена — ничего не фиксируется",
+  manager:   "Менеджер ведёт клиентов в голове",
+  deal:      "Сделки срываются незаметно",
+  marketing: "Маркетолог не знает откуда звонки",
+  analytics: "Аналитики нет — решения вслепую",
+};
+
+const ORDER_MESSAGES: Record<NodeId, string> = {
+  leads:     "Каждый лид фиксируется автоматически",
+  amocrm:    "CRM видит весь путь клиента",
+  manager:   "Менеджер знает кому и когда звонить",
+  deal:      "Сделки не теряются — система следит",
+  marketing: "Маркетолог видит откуда деньги",
+  analytics: "Данные есть — решения точные",
+};
+
+function CrmGame() {
+  const [crmOn, setCrmOn] = useState(false);
+  const [activeNode, setActiveNode] = useState<NodeId | null>(null);
+  const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
+  const [particles, setParticles] = useState<{ id: number; edge: number; t: number }[]>([]);
+  const [revenue, setRevenue] = useState(0);
+  const [shake, setShake] = useState(false);
+  const animRef = useRef<number | null>(null);
+  const lastRef = useRef<number>(0);
+  const revenueRef = useRef(0);
+  const particleId = useRef(0);
+
+  const toggleCrm = useCallback(() => {
+    setCrmOn(prev => {
+      const next = !prev;
+      if (!next) {
+        setParticles([]);
+        setShake(true);
+        setTimeout(() => setShake(false), 600);
+      }
+      return next;
+    });
   }, []);
 
-  const lines = [
-    { id:"psl0", x1:230,y1:195,x2:230,y2:108, dash:90 },
-    { id:"psl1", x1:268,y1:208,x2:348,y2:148, dash:100 },
-    { id:"psl2", x1:268,y1:260,x2:348,y2:318, dash:100 },
-    { id:"psl3", x1:230,y1:275,x2:230,y2:358, dash:85 },
-    { id:"psl4", x1:192,y1:260,x2:112,y2:318, dash:100 },
-    { id:"psl5", x1:192,y1:208,x2:112,y2:148, dash:100 },
-  ];
-  const travellers = [
-    { path:"M230,195 L230,108", dur:"2s", begin:"3.5s" },
-    { path:"M268,208 L348,148", dur:"2s", begin:"4s" },
-    { path:"M268,260 L348,318", dur:"2.2s", begin:"4.3s" },
-    { path:"M230,275 L230,358", dur:"2s", begin:"3.8s" },
-    { path:"M192,260 L112,318", dur:"2.1s", begin:"4.5s" },
-    { path:"M192,208 L112,148", dur:"1.9s", begin:"4.2s" },
-  ];
-  const nodes = [
-    { id:"psn0", tx:230, ty:88, label:"ЛИДЫ", stroke:"#B6E942", w:76, fill:"#B6E942" },
-    { id:"psn1", tx:370, ty:135, label:"amoCRM", stroke:"#B6E942", w:88, fill:"#B6E942" },
-    { id:"psn2", tx:370, ty:332, label:"МЕНЕДЖЕР", stroke:"#D4E000", w:100, fill:"#D4E000" },
-    { id:"psn3", tx:230, ty:376, label:"СДЕЛКА", stroke:"#7FAF2B", w:80, fill:"#7FAF2B" },
-    { id:"psn4", tx:90, ty:332, label:"МАРКЕТИНГ", stroke:"#B6E942", w:100, fill:"#B6E942" },
-    { id:"psn5", tx:90, ty:135, label:"АНАЛИТИКА", stroke:"#D4E000", w:100, fill:"#D4E000" },
-  ];
+  useEffect(() => {
+    if (!crmOn) {
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+      return;
+    }
+
+    const loop = (ts: number) => {
+      const dt = ts - lastRef.current;
+      lastRef.current = ts;
+
+      // spawn particles
+      if (Math.random() < 0.04) {
+        const edgeIdx = Math.floor(Math.random() * EDGES.length);
+        setParticles(prev => [
+          ...prev.filter(p => p.t < 1),
+          { id: particleId.current++, edge: edgeIdx, t: 0 },
+        ]);
+      }
+
+      // advance particles
+      setParticles(prev =>
+        prev
+          .map(p => ({ ...p, t: p.t + dt * 0.0006 }))
+          .filter(p => p.t < 1)
+      );
+
+      // revenue tick
+      revenueRef.current += dt * 0.08;
+      setRevenue(Math.floor(revenueRef.current));
+
+      animRef.current = requestAnimationFrame(loop);
+    };
+    animRef.current = requestAnimationFrame(loop);
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, [crmOn]);
+
+  const handleNode = (node: NodeDef, e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    const rect = (e.currentTarget as HTMLElement).closest(".crm-svg-wrap")?.getBoundingClientRect();
+    const nx = node.x / 460;
+    const ny = node.y / 460;
+    setActiveNode(node.id === activeNode ? null : node.id);
+    if (rect) {
+      setTooltip({
+        text: crmOn ? ORDER_MESSAGES[node.id] : CHAOS_MESSAGES[node.id],
+        x: rect.left + rect.width * nx,
+        y: rect.top + rect.height * ny - 60,
+      });
+    }
+    setTimeout(() => setTooltip(null), 2200);
+  };
+
+  const getEdgePath = (edge: [NodeId, NodeId]) => {
+    const a = NODES.find(n => n.id === edge[0])!;
+    const b = NODES.find(n => n.id === edge[1])!;
+    return { x1: a.x, y1: a.y, x2: b.x, y2: b.y };
+  };
+
+  const getParticlePos = (p: { edge: number; t: number }) => {
+    const edge = EDGES[p.edge];
+    const a = NODES.find(n => n.id === edge[0])!;
+    const b = NODES.find(n => n.id === edge[1])!;
+    return {
+      x: a.x + (b.x - a.x) * p.t,
+      y: a.y + (b.y - a.y) * p.t,
+    };
+  };
 
   return (
-    <div className="ps-wrap" ref={ref}>
-      <svg className="ps-svg" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="pgGrad" x1="230" y1="100" x2="230" y2="360" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#D4E000" />
-            <stop offset="50%" stopColor="#B6E942" />
-            <stop offset="100%" stopColor="#7FAF2B" />
-          </linearGradient>
-          <filter id="pgGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-          <filter id="pgGlowBig" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="12" result="blur" />
-            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
-        <g opacity="0.12">
-          {[80,160,240,320,400].flatMap(x =>
-            [80,160,240,320,400].map(y => (
-              <circle key={`${x}-${y}`} cx={x} cy={y} r="1.5" fill="#B6E942" />
-            ))
-          )}
-        </g>
-        {lines.map(l => (
-          <line key={l.id} className="ps-line" id={l.id}
-            x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-            stroke="#B6E942" strokeWidth="1.5"
-            strokeDasharray={l.dash} strokeDashoffset={l.dash} opacity="0.6" />
-        ))}
-        {travellers.map((t, i) => (
-          <circle key={i} className="ps-traveller" r="3" fill="#F5E200" filter="url(#pgGlow)" opacity="0">
-            <animateMotion dur={t.dur} repeatCount="indefinite" begin={t.begin} path={t.path} />
-          </circle>
-        ))}
-        {nodes.map(n => (
-          <g key={n.id} className="ps-node" id={n.id} opacity="0" transform={`translate(${n.tx},${n.ty})`}>
-            <rect x={-n.w/2} y="-18" width={n.w} height="36" rx="8" fill="#1E2420" stroke={n.stroke} strokeWidth="1.2" opacity="0.9" />
-            <rect x={-n.w/2} y="-18" width={n.w} height="36" rx="8" fill={n.fill} opacity="0.06" />
-            <text x="0" y="5" textAnchor="middle" fontFamily="Oswald,sans-serif" fontSize="11" fontWeight="600" fill={n.fill} letterSpacing="1">{n.label}</text>
+    <div className={`crm-game${shake ? " crm-shake" : ""}`}>
+      {/* Revenue counter */}
+      <div className={`crm-revenue${crmOn ? " crm-revenue-on" : ""}`}>
+        {crmOn ? (
+          <>
+            <span className="crm-rev-label">Выручка растёт</span>
+            <span className="crm-rev-num">+{revenue.toLocaleString("ru")} ₽</span>
+          </>
+        ) : (
+          <>
+            <span className="crm-rev-label">Деньги теряются</span>
+            <span className="crm-rev-num crm-rev-loss">–{Math.floor(revenue * 0.4).toLocaleString("ru")} ₽</span>
+          </>
+        )}
+      </div>
+
+      <div className="crm-svg-wrap" onClick={() => setActiveNode(null)}>
+        <svg viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg" className="crm-svg">
+          <defs>
+            <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="5" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+            <filter id="glowBig" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="14" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          {/* Grid dots */}
+          <g opacity="0.07">
+            {[60,120,180,240,300,360,420].flatMap(x =>
+              [60,120,180,240,300,360,420].map(y => (
+                <circle key={`${x}-${y}`} cx={x} cy={y} r="1.2" fill="#B6E942" />
+              ))
+            )}
           </g>
-        ))}
-        <circle className="ps-aura" cx="230" cy="230" r="85" stroke="#B6E942" strokeWidth="0.5" opacity="0" />
-        <circle className="ps-aura2" cx="230" cy="230" r="105" stroke="#B6E942" strokeWidth="0.3" opacity="0" />
-        <circle cx="230" cy="230" r="68" fill="#0e1210" stroke="rgba(182,233,66,0.08)" strokeWidth="1" />
-        <circle className="ps-ring-draw" cx="230" cy="240" r="44" stroke="url(#pgGrad)" strokeWidth="4" strokeLinecap="round" filter="url(#pgGlow)" strokeDasharray="198 88" strokeDashoffset="286" transform="rotate(-90 230 240)" />
-        <line className="ps-vline-draw" x1="230" y1="196" x2="230" y2="240" stroke="url(#pgGrad)" strokeWidth="4" strokeLinecap="round" strokeDasharray="44" strokeDashoffset="44" filter="url(#pgGlow)" />
-        <path className="ps-arrow-draw" d="M218 213 L230 199 L242 213" stroke="url(#pgGrad)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="30" strokeDashoffset="30" fill="none" filter="url(#pgGlow)" />
-        <circle className="ps-center-glow" cx="230" cy="230" r="68" fill="url(#pgGrad)" opacity="0" filter="url(#pgGlowBig)" />
-      </svg>
-      <div className="ps-status">
-        <span className="ps-sdot" />
-        ВКЛЮЧЕНО
+
+          {/* Edges */}
+          {EDGES.map((edge, i) => {
+            const { x1, y1, x2, y2 } = getEdgePath(edge);
+            const len = Math.hypot(x2 - x1, y2 - y1);
+            return (
+              <line
+                key={i}
+                x1={x1} y1={y1} x2={x2} y2={y2}
+                stroke={crmOn ? "#B6E942" : "#ff4444"}
+                strokeWidth={crmOn ? "1.5" : "1"}
+                strokeOpacity={crmOn ? "0.6" : "0.2"}
+                strokeDasharray={crmOn ? "none" : `${len * 0.15} ${len * 0.1}`}
+                className="crm-edge"
+              />
+            );
+          })}
+
+          {/* Particles */}
+          {crmOn && particles.map(p => {
+            const pos = getParticlePos(p);
+            return (
+              <circle
+                key={p.id}
+                cx={pos.x} cy={pos.y} r="4"
+                fill="#F5E200"
+                filter="url(#glow)"
+                opacity={Math.sin(p.t * Math.PI)}
+              />
+            );
+          })}
+
+          {/* Chaos particles (crm off) */}
+          {!crmOn && particles.map(p => {
+            const pos = getParticlePos(p);
+            return (
+              <circle
+                key={p.id}
+                cx={pos.x + (Math.random() - 0.5) * 30}
+                cy={pos.y + (Math.random() - 0.5) * 30}
+                r="3"
+                fill="#ff6b6b"
+                opacity={0.4 * (1 - p.t)}
+              />
+            );
+          })}
+
+          {/* Center power button */}
+          <circle
+            cx="230" cy="230" r="52"
+            fill={crmOn ? "rgba(182,233,66,0.08)" : "rgba(255,68,68,0.06)"}
+            stroke={crmOn ? "rgba(182,233,66,0.25)" : "rgba(255,68,68,0.2)"}
+            strokeWidth="1"
+          />
+          {crmOn && (
+            <circle cx="230" cy="230" r="52" fill="rgba(182,233,66,0.06)" filter="url(#glowBig)" />
+          )}
+
+          {/* Power icon */}
+          <path
+            d="M220 208 L230 196 L240 208"
+            stroke={crmOn ? "#B6E942" : "#ff6b6b"}
+            strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"
+          />
+          <path
+            d="M218 213 A18 18 0 1 0 242 213"
+            stroke={crmOn ? "#B6E942" : "#ff6b6b"}
+            strokeWidth="3" strokeLinecap="round" fill="none"
+          />
+
+          {/* Nodes */}
+          {NODES.map(node => {
+            const isActive = activeNode === node.id;
+            const w = node.id === "analytics" || node.id === "marketing" || node.id === "manager" ? 100 : node.id === "amocrm" ? 88 : 80;
+            return (
+              <g
+                key={node.id}
+                transform={`translate(${node.x},${node.y})`}
+                className={`crm-node${crmOn ? " crm-node-on" : " crm-node-off"}${isActive ? " crm-node-active" : ""}`}
+                onClick={e => handleNode(node, e)}
+                onTouchEnd={e => handleNode(node, e as unknown as React.TouchEvent)}
+                style={{ cursor: "pointer" }}
+              >
+                <rect
+                  x={-w / 2} y="-20" width={w} height="40" rx="10"
+                  fill="#1a2018"
+                  stroke={crmOn ? node.color : "#ff4444"}
+                  strokeWidth={isActive ? "2.5" : "1.5"}
+                  opacity={crmOn ? "1" : "0.5"}
+                />
+                {isActive && (
+                  <rect x={-w / 2} y="-20" width={w} height="40" rx="10"
+                    fill={node.color} opacity="0.12" />
+                )}
+                <text
+                  x="0" y="-5" textAnchor="middle"
+                  fontFamily="Oswald,sans-serif" fontSize="9" fontWeight="600"
+                  fill={crmOn ? node.color : "#ff6666"} letterSpacing="0.8"
+                  opacity={crmOn ? "1" : "0.5"}
+                >
+                  {node.icon}
+                </text>
+                <text
+                  x="0" y="9" textAnchor="middle"
+                  fontFamily="Oswald,sans-serif" fontSize="10" fontWeight="600"
+                  fill={crmOn ? node.color : "#ff6666"} letterSpacing="1"
+                  opacity={crmOn ? "1" : "0.5"}
+                >
+                  {node.label}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+
+      {/* Tooltip */}
+      {tooltip && (
+        <div
+          className="crm-tooltip"
+          style={{ left: tooltip.x, top: tooltip.y }}
+        >
+          {tooltip.text}
+        </div>
+      )}
+
+      {/* Power toggle */}
+      <button
+        className={`crm-toggle${crmOn ? " crm-toggle-on" : " crm-toggle-off"}`}
+        onClick={toggleCrm}
+        aria-label={crmOn ? "Выключить CRM" : "Включить CRM"}
+      >
+        <span className="crm-toggle-dot" />
+        <span className="crm-toggle-label">
+          {crmOn ? "amoCRM включена" : "Нажми — включи CRM"}
+        </span>
+      </button>
+
+      {/* Status */}
+      <div className={`crm-status${crmOn ? " crm-status-on" : " crm-status-off"}`}>
+        {crmOn
+          ? "Система работает — заявки фиксируются, деньги не теряются"
+          : "Хаос в продажах — нажимай на узлы чтобы увидеть проблемы"
+        }
       </div>
     </div>
   );
@@ -133,7 +368,7 @@ export function Hero({ onConsult }: { onConsult: () => void }) {
           </R>
         </div>
         <div className="hero-right">
-          <PowerScene />
+          <CrmGame />
         </div>
       </div>
     </section>

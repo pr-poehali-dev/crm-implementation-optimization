@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { R } from "@/components/shared";
 
 // ─── Inline SVG icons ─────────────────────────────────────────────────────────
@@ -210,27 +211,83 @@ export function Process() {
 }
 
 // ─── Honesty ──────────────────────────────────────────────────────────────────
-export function Honesty() {
-  const cards = [
-    { ico: <IcoNoReviews />, title: "Нет пачки отзывов", text: "Отзывы пишут в двух случаях: когда очень разозлились или когда попросили за деньги. Ни то ни другое нам не подходит." },
-    { ico: <IcoPhone />, title: "Вместо отзывов — живые контакты", text: "Мы дадим телефоны клиентов. Можно позвонить, поговорить, спросить всё что угодно. Это честнее любого скриншота с пятью звёздами." },
-    { ico: <IcoNoPromise />, title: "Не обещаем рост x2", text: "Результат зависит от вашей команды, продукта, рынка — и от нас тоже. Мы говорим об этом заранее, а не после." },
-    { ico: <IcoTarget />, title: "Цена за погружение, не за скорость", text: "Мы не делаем 10 проектов в месяц. Каждый проект — отдельная история, в которую нужно вникнуть. Поэтому цена такая, какая есть." },
-  ];
+
+const honestyCards = [
+  {
+    ico: <IcoNoReviews />,
+    front: "Нет пачки отзывов",
+    frontSub: "и это честно",
+    back: "Отзывы пишут в двух случаях: когда очень разозлились или когда попросили за деньги. Мы дадим телефоны реальных клиентов — звоните сами.",
+    rotate: "-2deg",
+    accent: "#ff6b6b",
+  },
+  {
+    ico: <IcoPhone />,
+    front: "Живые контакты вместо скриншотов",
+    frontSub: "потому что это честнее",
+    back: "Можно позвонить любому нашему клиенту. Спросить всё что угодно. Ни одна звёздочка из пяти не заменит живого разговора.",
+    rotate: "1.5deg",
+    accent: "#B6E942",
+  },
+  {
+    ico: <IcoNoPromise />,
+    front: "Не обещаем рост x2",
+    frontSub: "потому что не знаем вашу команду",
+    back: "Результат зависит от вашей команды, продукта и рынка — и от нас тоже. Мы говорим об этом заранее, а не оправдываемся потом.",
+    rotate: "-1deg",
+    accent: "#ff6b6b",
+  },
+  {
+    ico: <IcoTarget />,
+    front: "Цена за погружение",
+    frontSub: "не за скорость",
+    back: "Мы не делаем 10 проектов в месяц. Каждый проект — отдельная история, в которую нужно вникнуть. Поэтому цена такая, какая есть.",
+    rotate: "2deg",
+    accent: "#B6E942",
+  },
+];
+
+function HonCard({ card, index }: { card: typeof honestyCards[0]; index: number }) {
+  const [flipped, setFlipped] = useState(false);
   return (
-    <section className="sec sec-white" id="honesty">
+    <div
+      className={`hon2-card${flipped ? " hon2-flipped" : ""}`}
+      style={{ "--card-rotate": card.rotate, animationDelay: `${index * 0.12}s` } as React.CSSProperties}
+      onClick={() => setFlipped(v => !v)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => e.key === "Enter" && setFlipped(v => !v)}
+      aria-label={`Карточка: ${card.front}. Нажмите чтобы перевернуть`}
+    >
+      <div className="hon2-inner">
+        <div className="hon2-face hon2-front">
+          <div className="hon2-ico">{card.ico}</div>
+          <h3 className="hon2-title">{card.front}</h3>
+          <p className="hon2-sub" style={{ color: card.accent }}>{card.frontSub}</p>
+          <div className="hon2-hint">нажми →</div>
+        </div>
+        <div className="hon2-face hon2-back">
+          <p className="hon2-back-text">{card.back}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function Honesty() {
+  return (
+    <section className="sec sec-white hon2-section" id="honesty">
       <div className="wrap">
         <R><div className="sec-eye">Честно о себе</div></R>
-        <R delay={100}><h2 className="h2">Скажем прямо — у нас нет того,<br />что есть у всех</h2></R>
-        <div className="hon-grid">
-          {cards.map((c, i) => (
-            <R key={i} delay={100 + i * 100}>
-              <div className="hon-card">
-                {c.ico}
-                <h3>{c.title}</h3>
-                <p>{c.text}</p>
-              </div>
-            </R>
+        <R delay={100}>
+          <h2 className="h2">Скажем прямо —<br />у нас нет того,<br /><span className="hon2-strike">что есть у всех</span></h2>
+        </R>
+        <R delay={150}>
+          <p className="hon2-lead">Переверни каждую карточку</p>
+        </R>
+        <div className="hon2-board">
+          {honestyCards.map((card, i) => (
+            <HonCard key={i} card={card} index={i} />
           ))}
         </div>
       </div>
