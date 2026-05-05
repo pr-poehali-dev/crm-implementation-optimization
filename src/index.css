@@ -1431,27 +1431,27 @@ button.btn-ghost:hover {
 .hdr-tg {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  background: rgba(34, 158, 217, 0.12);
-  border: 1px solid rgba(34, 158, 217, 0.3);
-  color: #229ed9;
-  font-size: 13px;
+  gap: 6px;
+  background: rgba(182, 233, 66, 0.08);
+  border: 1px solid rgba(182, 233, 66, 0.2);
+  color: rgba(251, 251, 248, 0.65);
+  font-size: 12px;
   font-weight: 600;
-  padding: 8px 16px;
+  padding: 7px 14px;
   border-radius: 100px;
   transition: all 0.22s var(--ease);
   white-space: nowrap;
 }
 .hdr-tg:hover {
-  background: rgba(34, 158, 217, 0.2);
-  border-color: rgba(34, 158, 217, 0.55);
-  transform: translateY(-1px);
+  background: rgba(182, 233, 66, 0.14);
+  border-color: rgba(182, 233, 66, 0.4);
+  color: var(--lime);
 }
 .mobile-tg-link {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #229ed9 !important;
+  color: var(--lime) !important;
   font-family: var(--font-h);
   font-size: clamp(1.4rem, 4vw, 2rem) !important;
   font-weight: 700;
@@ -1464,11 +1464,11 @@ button.btn-ghost:hover {
   gap: 7px;
   font-size: 13px;
   font-weight: 600;
-  color: #229ed9;
-  transition: opacity 0.2s;
+  color: rgba(251, 251, 248, 0.5);
+  transition: color 0.2s;
 }
 .ftr-tg:hover {
-  opacity: 0.8;
+  color: var(--lime);
 }
 .ftr-privacy {
   font-size: 12px;
@@ -1479,7 +1479,7 @@ button.btn-ghost:hover {
   color: var(--lime);
 }
 
-/* Floating TG button */
+/* Floating TG button — в стиле сайта, лайм */
 .tg-float {
   position: fixed;
   bottom: 28px;
@@ -1488,20 +1488,32 @@ button.btn-ghost:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #229ed9;
-  color: #fff;
+  background: var(--lime);
+  color: var(--graphite);
   font-weight: 700;
-  font-size: 14px;
-  padding: 14px 22px 14px 18px;
+  font-size: 13px;
+  padding: 13px 20px 13px 16px;
   border-radius: 100px;
-  box-shadow: 0 4px 24px rgba(34, 158, 217, 0.5);
+  box-shadow: var(--lime-glow);
   transition: all 0.25s var(--ease);
-  max-width: 220px;
+  max-width: 230px;
   overflow: hidden;
+  animation: tg-float-pulse 3s ease-in-out infinite;
+}
+@keyframes tg-float-pulse {
+  0%,
+  100% {
+    box-shadow: var(--lime-glow-sm);
+  }
+  50% {
+    box-shadow: var(--lime-glow);
+  }
 }
 .tg-float:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 36px rgba(34, 158, 217, 0.65);
+  box-shadow:
+    0 0 32px rgba(182, 233, 66, 0.7),
+    0 0 64px rgba(182, 233, 66, 0.3);
 }
 .tg-float-label {
   white-space: nowrap;
@@ -1520,7 +1532,7 @@ button.btn-ghost:hover {
   .tg-float {
     bottom: 20px;
     right: 16px;
-    padding: 14px;
+    padding: 13px;
     border-radius: 50%;
   }
   .tg-float-label {
@@ -1565,8 +1577,8 @@ button.btn-ghost:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 68, 68, 0.08);
-  border: 1px solid rgba(255, 68, 68, 0.2);
+  background: rgba(182, 233, 66, 0.04);
+  border: 1px solid rgba(182, 233, 66, 0.12);
   border-radius: 100px;
   padding: 8px 20px;
   transition: all 0.4s var(--ease);
@@ -1574,8 +1586,8 @@ button.btn-ghost:hover {
   justify-content: center;
 }
 .crm-revenue.crm-revenue-on {
-  background: rgba(182, 233, 66, 0.08);
-  border-color: rgba(182, 233, 66, 0.25);
+  background: rgba(182, 233, 66, 0.1);
+  border-color: rgba(182, 233, 66, 0.3);
 }
 .crm-rev-label {
   font-size: 12px;
@@ -1593,8 +1605,23 @@ button.btn-ghost:hover {
   letter-spacing: 0.04em;
   transition: color 0.3s;
 }
-.crm-rev-loss {
-  color: #ff6b6b;
+.crm-rev-muted {
+  color: rgba(182, 233, 66, 0.5);
+  font-size: 13px;
+}
+.crm-rev-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 8px rgba(182, 233, 66, 0.8);
+  flex-shrink: 0;
+  animation: dot 2s infinite;
+}
+.crm-rev-dot-off {
+  background: rgba(182, 233, 66, 0.3);
+  box-shadow: none;
+  animation: none;
 }
 .crm-svg-wrap {
   width: 100%;
@@ -1640,33 +1667,37 @@ button.btn-ghost:hover {
   cursor: pointer;
 }
 .crm-toggle-off {
-  background: rgba(255, 68, 68, 0.1);
-  border-color: rgba(255, 68, 68, 0.4);
-  color: #ff8888;
-  animation: crm-pulse-red 2s ease-in-out infinite;
+  background: rgba(182, 233, 66, 0.06);
+  border-color: rgba(182, 233, 66, 0.25);
+  color: rgba(182, 233, 66, 0.7);
+  animation: crm-pulse-off 1.4s ease-in-out infinite;
 }
 .crm-toggle-on {
-  background: rgba(182, 233, 66, 0.1);
-  border-color: rgba(182, 233, 66, 0.4);
-  color: var(--lime);
-  animation: crm-pulse-green 3s ease-in-out infinite;
+  background: var(--lime);
+  border-color: var(--lime);
+  color: var(--graphite);
+  animation: crm-pulse-on 2.5s ease-in-out infinite;
 }
-@keyframes crm-pulse-red {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
-  }
-  50% {
-    box-shadow: 0 0 20px 4px rgba(255, 68, 68, 0.25);
-  }
-}
-@keyframes crm-pulse-green {
+@keyframes crm-pulse-off {
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(182, 233, 66, 0);
+    transform: scale(1);
   }
   50% {
+    box-shadow:
+      0 0 24px 6px rgba(182, 233, 66, 0.2),
+      0 0 0 4px rgba(182, 233, 66, 0.08);
+    transform: scale(1.02);
+  }
+}
+@keyframes crm-pulse-on {
+  0%,
+  100% {
     box-shadow: var(--lime-glow-sm);
+  }
+  50% {
+    box-shadow: var(--lime-glow);
   }
 }
 .crm-toggle-dot {
@@ -1680,24 +1711,27 @@ button.btn-ghost:hover {
 .crm-toggle-label {
   white-space: nowrap;
 }
-.crm-status {
+.crm-hint {
   font-size: 12px;
   line-height: 1.5;
   text-align: center;
-  max-width: 320px;
-  padding: 10px 16px;
-  border-radius: var(--r);
-  transition: all 0.4s var(--ease);
+  color: rgba(182, 233, 66, 0.4);
+  letter-spacing: 0.02em;
 }
-.crm-status-off {
-  color: rgba(255, 107, 107, 0.7);
-  background: rgba(255, 68, 68, 0.05);
-  border: 1px solid rgba(255, 68, 68, 0.12);
+.crm-center-ring {
+  transition: stroke 0.5s ease;
 }
-.crm-status-on {
-  color: rgba(182, 233, 66, 0.7);
-  background: rgba(182, 233, 66, 0.05);
-  border: 1px solid rgba(182, 233, 66, 0.12);
+.crm-center-glow {
+  animation: crm-glow-pulse 3s ease-in-out infinite;
+}
+@keyframes crm-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 .crm-tooltip {
   position: fixed;
@@ -1741,9 +1775,10 @@ button.btn-ghost:hover {
   top: 50%;
   width: 100%;
   height: 4px;
-  background: #ff6b6b;
+  background: var(--lime);
   border-radius: 2px;
   transform: translateY(-50%) rotate(-2deg);
+  opacity: 0.7;
 }
 .hon2-lead {
   font-size: 13px;
@@ -1927,6 +1962,109 @@ button.btn-ghost:hover {
 .privacy-wrap strong {
   color: var(--graphite);
   font-weight: 600;
+}
+
+.privacy-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 48px 0;
+}
+
+/* ─── Consent Banner ─────────────────────────────────────────────────────── */
+.consent-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 400;
+  padding: 0 clamp(1rem, 3vw, 2.5rem) clamp(1rem, 2vw, 1.5rem);
+  animation: consent-slide-up 0.5s var(--ease);
+}
+@keyframes consent-slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.consent-banner {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--graphite);
+  border: 1px solid rgba(182, 233, 66, 0.2);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.35);
+}
+.consent-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.consent-body {
+  flex: 1;
+  min-width: 0;
+}
+.consent-title {
+  font-family: var(--font-h);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--lime);
+  margin-bottom: 6px;
+}
+.consent-text {
+  font-size: 13px;
+  color: rgba(251, 251, 248, 0.55);
+  line-height: 1.5;
+}
+.consent-link {
+  color: var(--lime);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.consent-link:hover {
+  opacity: 0.8;
+}
+.consent-btn {
+  flex-shrink: 0;
+  background: var(--lime);
+  color: var(--graphite);
+  font-family: var(--font-b);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  box-shadow: var(--lime-glow-sm);
+  white-space: nowrap;
+}
+.consent-btn:hover {
+  box-shadow: var(--lime-glow);
+  transform: translateY(-1px);
+}
+@media (max-width: 640px) {
+  .consent-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+  }
+  .consent-btn {
+    width: 100%;
+    text-align: center;
+  }
+  .consent-icon {
+    display: none;
+  }
 }
 
 /* Responsive for new elements */
