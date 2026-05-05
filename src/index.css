@@ -1072,18 +1072,20 @@ button.btn-ghost:hover {
   background: rgba(251, 251, 248, 0.04);
   border: 1px solid rgba(182, 233, 66, 0.18);
   border-radius: 20px;
-  padding: 32px 28px;
+  padding: 32px 28px 28px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: visible;
   transition:
-    border-color 0.25s var(--ease),
-    transform 0.25s var(--ease),
-    box-shadow 0.25s var(--ease);
+    border-color 0.3s var(--ease),
+    transform 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
 }
 .pr-card:hover {
   border-color: rgba(182, 233, 66, 0.45);
-  transform: translateY(-4px);
-  box-shadow: 0 0 32px rgba(182, 233, 66, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 0 40px rgba(182, 233, 66, 0.12);
 }
 .pr-card-tag {
   font-family: var(--font-h);
@@ -2067,13 +2069,236 @@ button.btn-ghost:hover {
   }
 }
 
+/* ─── Custom Cursor ──────────────────────────────────────────────────────── */
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: #f5e200;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  margin: -4px 0 0 -4px;
+  box-shadow:
+    0 0 10px rgba(245, 226, 0, 0.9),
+    0 0 20px rgba(245, 226, 0, 0.5);
+  transition:
+    width 0.15s,
+    height 0.15s,
+    background 0.15s;
+  will-change: transform;
+}
+.cursor-dot.cursor-clicked {
+  width: 5px;
+  height: 5px;
+  background: #b6e942;
+  box-shadow:
+    0 0 16px rgba(182, 233, 66, 1),
+    0 0 32px rgba(182, 233, 66, 0.6);
+}
+.cursor-dot.cursor-on-clickable {
+  width: 12px;
+  height: 12px;
+  background: #b6e942;
+  box-shadow:
+    0 0 16px rgba(182, 233, 66, 1),
+    0 0 32px rgba(182, 233, 66, 0.5);
+  margin: -6px 0 0 -6px;
+}
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(245, 226, 0, 0.55);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  margin: -18px 0 0 -18px;
+  transition:
+    width 0.2s,
+    height 0.2s,
+    border-color 0.2s,
+    opacity 0.2s;
+  will-change: transform;
+}
+.cursor-ring.cursor-ring-clicked {
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border-color: rgba(182, 233, 66, 0.8);
+}
+.cursor-ring.cursor-ring-clickable {
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  border-color: rgba(182, 233, 66, 0.7);
+  background: rgba(182, 233, 66, 0.04);
+}
+
+/* ─── Honesty — hover & flip button ─────────────────────────────────────── */
+.hon2-card:hover,
+.hon2-hovered {
+  transform: rotate(0deg) translateY(-6px) scale(1.03) !important;
+  z-index: 3;
+}
+.hon2-hovered .hon2-front {
+  border-color: var(--card-accent, #b6e942) !important;
+  box-shadow:
+    0 0 0 1px var(--card-accent, #b6e942),
+    0 12px 40px rgba(182, 233, 66, 0.12);
+}
+.hon2-flip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid;
+  border-radius: 100px;
+  padding: 5px 14px;
+  margin-top: 12px;
+  transition: all 0.2s var(--ease);
+  align-self: flex-start;
+}
+.hon2-card:hover .hon2-flip-btn,
+.hon2-hovered .hon2-flip-btn {
+  background: var(--card-accent, #b6e942);
+  color: var(--graphite) !important;
+  border-color: var(--card-accent, #b6e942);
+}
+.hon2-flip-btn-back {
+  border-color: rgba(182, 233, 66, 0.3) !important;
+  color: rgba(182, 233, 66, 0.6) !important;
+  align-self: center;
+  margin-top: 16px;
+}
+.hon2-flipped .hon2-flip-btn-back:hover {
+  background: rgba(182, 233, 66, 0.1);
+}
+
+/* ─── Pricing — анимированные карточки ──────────────────────────────────── */
+.pr-card-popular {
+  border-color: rgba(182, 233, 66, 0.5) !important;
+  background: rgba(182, 233, 66, 0.04) !important;
+  position: relative;
+}
+.pr-card-popular::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(182, 233, 66, 0.3) 0%,
+    transparent 50%,
+    rgba(245, 226, 0, 0.2) 100%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.pr-card-popular:hover::before,
+.pr-card-hovered.pr-card-popular::before {
+  opacity: 1;
+}
+.pr-popular-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--lime);
+  color: var(--graphite);
+  font-family: var(--font-h);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 16px;
+  border-radius: 100px;
+  white-space: nowrap;
+  box-shadow: var(--lime-glow-sm);
+}
+.pr-card-hovered {
+  transform: translateY(-6px) !important;
+  border-color: rgba(182, 233, 66, 0.5) !important;
+  box-shadow:
+    0 0 40px rgba(182, 233, 66, 0.12),
+    0 20px 60px rgba(0, 0, 0, 0.3) !important;
+}
+.pr-features {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.pr-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: rgba(251, 251, 248, 0.65);
+  opacity: 0;
+  animation: pr-feat-in 0.4s var(--ease) forwards;
+}
+.pr-card-hovered .pr-feature,
+.pr-card:hover .pr-feature {
+  color: rgba(251, 251, 248, 0.85);
+}
+@keyframes pr-feat-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pr-feature-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(182, 233, 66, 0.12);
+  border: 1px solid rgba(182, 233, 66, 0.25);
+  color: var(--lime);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+.pr-card-hovered .pr-feature-dot,
+.pr-card:hover .pr-feature-dot {
+  background: rgba(182, 233, 66, 0.2);
+  box-shadow: 0 0 8px rgba(182, 233, 66, 0.4);
+}
+
 /* Responsive for new elements */
 @media (max-width: 768px) {
   .hon2-board {
     grid-template-columns: 1fr;
   }
   .hon2-card {
-    height: 220px;
+    height: auto;
+    min-height: 220px;
   }
   .crm-game {
     max-width: 100%;

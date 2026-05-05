@@ -166,8 +166,9 @@ function CrmGame() {
           </>
         ) : (
           <>
+            <span className="crm-rev-dot crm-rev-dot-off"/>
             <span className="crm-rev-label">Нет продаж?</span>
-            <span className="crm-rev-num crm-rev-muted">Нажимай на карточки</span>
+            <span className="crm-rev-num crm-rev-muted">Включи CRM →</span>
           </>
         )}
       </div>
@@ -261,19 +262,12 @@ function CrmGame() {
                   strokeWidth={isActive ? "2.2" : "1.2"}
                   opacity={crmOn ? "1" : "0.5"}
                 />
-                {/* inline SVG icon via text trick */}
-                <text x="0" y="-4" textAnchor="middle"
-                  fontFamily="Oswald,sans-serif" fontSize="10" fontWeight="600"
-                  fill={col} letterSpacing="0.8"
-                  opacity={crmOn ? "1" : "0.5"}
+                <text x="0" y="5" textAnchor="middle"
+                  fontFamily="Oswald,sans-serif" fontSize="11" fontWeight="700"
+                  fill={crmOn ? "#ffffff" : "rgba(255,255,255,0.35)"}
+                  letterSpacing="1"
                 >
                   {node.label}
-                </text>
-                <text x="0" y="10" textAnchor="middle"
-                  fontFamily="Oswald,sans-serif" fontSize="10" fontWeight="400"
-                  fill={col} opacity={crmOn ? "0.5" : "0.3"}
-                >
-                  ●
                 </text>
               </g>
             );
@@ -281,7 +275,7 @@ function CrmGame() {
         </svg>
       </div>
 
-      {/* Toggle button — центр под схемой, мигает */}
+      {/* Toggle button */}
       <button
         className={`crm-toggle${crmOn ? " crm-toggle-on" : " crm-toggle-off"}`}
         onClick={toggleCrm}
@@ -292,8 +286,8 @@ function CrmGame() {
 
       <p className="crm-hint">
         {crmOn
-          ? "Нажимай на узлы чтобы увидеть как работает система"
-          : "Нажимай на карточки чтобы увидеть проблемы"
+          ? "Нажимай на узлы — увидишь как работает система"
+          : "Нет продаж? Нажимай на узлы чтобы увидеть проблемы"
         }
       </p>
 

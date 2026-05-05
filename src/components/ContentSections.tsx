@@ -249,11 +249,14 @@ const honestyCards = [
 
 function HonCard({ card, index }: { card: typeof honestyCards[0]; index: number }) {
   const [flipped, setFlipped] = useState(false);
+  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className={`hon2-card${flipped ? " hon2-flipped" : ""}`}
-      style={{ "--card-rotate": card.rotate, animationDelay: `${index * 0.12}s` } as React.CSSProperties}
+      className={`hon2-card${flipped ? " hon2-flipped" : ""}${hovered ? " hon2-hovered" : ""}`}
+      style={{ "--card-rotate": card.rotate, "--card-accent": card.accent, animationDelay: `${index * 0.12}s` } as React.CSSProperties}
       onClick={() => setFlipped(v => !v)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === "Enter" && setFlipped(v => !v)}
@@ -264,10 +267,13 @@ function HonCard({ card, index }: { card: typeof honestyCards[0]; index: number 
           <div className="hon2-ico">{card.ico}</div>
           <h3 className="hon2-title">{card.front}</h3>
           <p className="hon2-sub" style={{ color: card.accent }}>{card.frontSub}</p>
-          <div className="hon2-hint">нажми →</div>
+          <div className="hon2-flip-btn" style={{ borderColor: card.accent, color: card.accent }}>
+            {flipped ? "← назад" : "перевернуть →"}
+          </div>
         </div>
         <div className="hon2-face hon2-back">
           <p className="hon2-back-text">{card.back}</p>
+          <div className="hon2-flip-btn hon2-flip-btn-back">← вернуть</div>
         </div>
       </div>
     </div>
@@ -296,43 +302,69 @@ export function Honesty() {
 }
 
 // ─── Pricing ──────────────────────────────────────────────────────────────────
+const pricingPlans = [
+  {
+    tag: "Старт",
+    title: "Базовая настройка",
+    desc: "Воронки, поля, права, подключение сайта и почты. Всё для старта.",
+    price: "от 40 000 ₽",
+    features: ["Воронки продаж", "Поля и права", "Подключение сайта", "Подключение почты", "Базовое обучение"],
+    popular: false,
+  },
+  {
+    tag: "Популярный",
+    title: "С автоматизациями",
+    desc: "Автоматизации, мессенджеры, телефония, интеграции. Система начинает работать сама.",
+    price: "от 50 000 ₽",
+    features: ["Всё из «Старт»", "Автоматизации задач", "Мессенджеры и чаты", "Телефония", "Интеграции"],
+    popular: true,
+  },
+  {
+    tag: "Под ключ",
+    title: "Комплексное внедрение",
+    desc: "Полный аудит процессов, проектирование, настройка, обучение команды, поддержка после запуска.",
+    price: "от 100 000 ₽",
+    features: ["Всё из «Автоматизации»", "Аудит процессов", "Проектирование CRM", "Обучение команды", "Поддержка после"],
+    popular: false,
+  },
+];
+
+function PriceCard({ plan, onConsult, index }: { plan: typeof pricingPlans[0]; onConsult: () => void; index: number }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <R delay={100 + index * 130}>
+      <div
+        className={`pr-card${plan.popular ? " pr-card-popular" : ""}${hovered ? " pr-card-hovered" : ""}`}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        {plan.popular && <div className="pr-popular-badge">✦ Чаще выбирают</div>}
+        <div className="pr-card-tag">{plan.tag}</div>
+        <h3 className="pr-card-title">{plan.title}</h3>
+        <div className="pr-card-price">{plan.price}</div>
+        <ul className="pr-features">
+          {plan.features.map((f, i) => (
+            <li key={i} className="pr-feature" style={{ animationDelay: `${i * 0.06 + index * 0.13}s` }}>
+              <span className="pr-feature-dot">✓</span>
+              {f}
+            </li>
+          ))}
+        </ul>
+        <button onClick={onConsult} className="pr-card-btn">Обсудить</button>
+      </div>
+    </R>
+  );
+}
+
 export function Pricing({ onConsult }: { onConsult: () => void }) {
-  const plans = [
-    {
-      tag: "Базовая",
-      title: "Базовая настройка",
-      desc: "Воронки, поля, права, подключение сайта и почты. Всё для старта.",
-      price: "от 40 000 ₽",
-    },
-    {
-      tag: "Стандарт",
-      title: "С автоматизациями",
-      desc: "Автоматизации, мессенджеры, телефония, интеграции. Система начинает работать сама.",
-      price: "от 50 000 ₽",
-    },
-    {
-      tag: "Под ключ",
-      title: "Комплексное внедрение",
-      desc: "Полный аудит процессов, проектирование, настройка, обучение команды, поддержка после запуска.",
-      price: "от 100 000 ₽",
-    },
-  ];
   return (
     <section className="sec sec-pricing" id="pricing">
       <div className="wrap">
         <R><div className="sec-eye">Услуги и цены</div></R>
         <R delay={100}><h2 className="h2">Что и сколько стоит</h2></R>
         <div className="pricing-grid">
-          {plans.map((p, i) => (
-            <R key={p.tag} delay={100 + i * 120}>
-              <div className="pr-card">
-                <div className="pr-card-tag">{p.tag}</div>
-                <h3 className="pr-card-title">{p.title}</h3>
-                <p className="pr-card-desc">{p.desc}</p>
-                <div className="pr-card-price">{p.price}</div>
-                <button onClick={onConsult} className="pr-card-btn" aria-label={`Обсудить тариф: ${p.title}`}>Обсудить</button>
-              </div>
-            </R>
+          {pricingPlans.map((p, i) => (
+            <PriceCard key={p.tag} plan={p} onConsult={onConsult} index={i} />
           ))}
         </div>
         <R delay={400}>

@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import ConsentBanner from "./components/ConsentBanner";
+import CustomCursor from "./components/CustomCursor";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
         </Routes>
         <ConsentBanner />
       </BrowserRouter>
+      <CustomCursor />
     </TooltipProvider>
   </QueryClientProvider>
 );
