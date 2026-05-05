@@ -135,16 +135,18 @@ function CrmGame() {
 
   const handleNode = (node: NodeDef, e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveNode(node.id === activeNode ? null : node.id);
-    const rect = wrapRef.current?.getBoundingClientRect();
-    if (rect) {
+    const newNode = node.id === activeNode ? null : node.id;
+    setActiveNode(newNode);
+    if (newNode) {
       setTooltip({
         text: crmOn ? ORDER_MSG[node.id] : CHAOS_MSG[node.id],
-        x: rect.left + rect.width * (node.x / 460),
-        y: rect.top + rect.height * (node.y / 460) - 60,
+        x: node.x / 460 * 100,
+        y: node.y / 460 * 100,
       });
+      setTimeout(() => setTooltip(null), 2600);
+    } else {
+      setTooltip(null);
     }
-    setTimeout(() => setTooltip(null), 2600);
   };
 
   const getParticlePos = (p: { edge: number; t: number }) => {
@@ -166,7 +168,6 @@ function CrmGame() {
           </>
         ) : (
           <>
-            <span className="crm-rev-dot crm-rev-dot-off"/>
             <span className="crm-rev-label">Нет продаж?</span>
             <span className="crm-rev-num crm-rev-muted">Включи CRM →</span>
           </>
@@ -174,7 +175,7 @@ function CrmGame() {
       </div>
 
       {/* SVG */}
-      <div className="crm-svg-wrap" ref={wrapRef} onClick={() => { setActiveNode(null); setTooltip(null); }}>
+      <div className="crm-svg-wrap" ref={wrapRef} onClick={() => { setActiveNode(null); setTooltip(null); }} style={{ position: "relative" }}>
         <svg viewBox="0 0 460 460" fill="none" className="crm-svg">
           <defs>
             <filter id="cglow" x="-40%" y="-40%" width="180%" height="180%">
@@ -273,6 +274,19 @@ function CrmGame() {
             );
           })}
         </svg>
+
+        {/* Tooltip — внутри svg-wrap для правильного позиционирования */}
+        {tooltip && (
+          <div
+            className="crm-tooltip"
+            style={{
+              left: `clamp(8px, ${tooltip.x}%, calc(100% - 8px))`,
+              top: `${tooltip.y}%`,
+            }}
+          >
+            {tooltip.text}
+          </div>
+        )}
       </div>
 
       {/* Toggle button */}
@@ -291,11 +305,7 @@ function CrmGame() {
         }
       </p>
 
-      {tooltip && (
-        <div className="crm-tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
-          {tooltip.text}
-        </div>
-      )}
+
     </div>
   );
 }

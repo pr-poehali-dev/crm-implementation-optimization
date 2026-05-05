@@ -1292,6 +1292,7 @@ button.btn-ghost:hover {
   }
 }
 
+/* ─── Tablet ─────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .hdr-nav,
   .hdr-right {
@@ -1305,12 +1306,46 @@ button.btn-ghost:hover {
   }
   .hero-inner {
     grid-template-columns: 1fr;
-    padding-top: 2rem;
+    padding-top: 1.5rem;
+    gap: 2rem;
   }
   .hero {
     min-height: auto;
-    padding-top: 5rem;
-    padding-bottom: 4rem;
+    padding-top: 4.5rem;
+    padding-bottom: 3rem;
+  }
+  /* CRM game на мобильном */
+  .crm-game {
+    max-width: 100%;
+    gap: 10px;
+  }
+  .crm-revenue {
+    min-width: 0;
+    width: 100%;
+    padding: 7px 14px;
+  }
+  .crm-rev-label {
+    font-size: 11px;
+  }
+  .crm-rev-num {
+    font-size: 13px;
+  }
+  .crm-toggle {
+    font-size: 13px;
+    padding: 10px 20px;
+    width: 100%;
+    justify-content: center;
+  }
+  .crm-hint {
+    font-size: 11px;
+    text-align: center;
+    padding: 0 8px;
+  }
+  /* Tooltip на мобильном — не выходит за экран */
+  .crm-tooltip {
+    font-size: 12px;
+    padding: 8px 12px;
+    max-width: min(220px, 70vw);
   }
   .dark-grid {
     grid-template-columns: 1fr;
@@ -1329,6 +1364,7 @@ button.btn-ghost:hover {
   }
   .pricing-grid {
     grid-template-columns: 1fr;
+    max-width: 480px;
   }
   .ftr {
     flex-direction: column;
@@ -1337,29 +1373,41 @@ button.btn-ghost:hover {
   .ftr-contact {
     align-items: flex-start;
   }
-  /* Header logo height */
   .brand img {
     height: 32px !important;
   }
+  /* Honesty карточки */
+  .hon2-board {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .hon2-card {
+    height: auto;
+    min-height: 200px;
+  }
+  /* Pricing features */
+  .pr-features {
+    gap: 8px;
+  }
+  .pr-feature {
+    font-size: 13px;
+  }
 }
 
+/* ─── Mobile ──────────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .team-grid {
-    grid-template-columns: 1fr;
+  .hero {
+    padding-top: 4rem;
+    padding-bottom: 2.5rem;
   }
-  .hon-grid {
-    grid-template-columns: 1fr;
+  .hero-inner {
+    gap: 1.5rem;
   }
-  .pr-cta {
-    flex-direction: column;
-    align-items: stretch;
+  h1.h1 {
+    font-size: clamp(2.8rem, 11vw, 4rem);
   }
-  .pr-cta .btn-lime,
-  .pr-cta .btn-ghost,
-  .pr-cta button.btn-lime,
-  .pr-cta button.btn-ghost {
-    width: 100%;
-    justify-content: center;
+  .hero-sub {
+    font-size: 0.9rem;
   }
   .hero-btns {
     flex-direction: column;
@@ -1371,27 +1419,76 @@ button.btn-ghost:hover {
     width: 100%;
     justify-content: center;
   }
-  /* Pricing table scroll on mobile */
-  .pr-table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .team-grid {
+    grid-template-columns: 1fr;
   }
-  .pr-table {
-    min-width: 480px;
+  .hon-grid {
+    grid-template-columns: 1fr;
   }
-  /* Modal full-screen on mobile */
+  .hon2-board {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .hon2-card {
+    min-height: 180px;
+    transform: none !important;
+  }
+  /* Убираем поворот карточек на мобильном */
+  .hon2-card:not(.hon2-flipped) .hon2-front {
+    cursor: pointer;
+  }
+  .pr-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+  .pr-card {
+    padding: 24px 20px;
+  }
+  .pr-popular-badge {
+    font-size: 9px;
+    padding: 3px 12px;
+    top: -12px;
+  }
+  /* CRM game мелкий */
+  .crm-svg-wrap {
+    max-width: 100%;
+  }
+  .crm-toggle {
+    font-size: 12px;
+    padding: 9px 16px;
+  }
+  .crm-revenue {
+    padding: 6px 12px;
+    gap: 7px;
+  }
   .amo-modal {
-    padding: 32px 20px 24px;
-    border-radius: 16px;
+    padding: 28px 16px 20px;
+    border-radius: 14px;
   }
-  /* SVG anim: disable heavy filters on mobile */
-  .ps-wrap {
-    max-width: 300px;
-  }
-  /* Reduce icon animation on mobile for perf */
   .q-svg-ico,
   .hon-svg-ico {
     animation-duration: 4s;
+    width: 44px;
+    height: 44px;
+  }
+  .sec-eye {
+    font-size: 10px;
+  }
+  h2.h2 {
+    font-size: clamp(1.7rem, 7vw, 2.5rem);
+  }
+  /* Footer */
+  .ftr-links {
+    gap: 16px;
+  }
+  /* Tg float — чуть выше на телефоне */
+  .tg-float {
+    bottom: 16px;
+    right: 12px;
   }
 }
 
@@ -1551,7 +1648,7 @@ button.btn-ghost:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   user-select: none;
 }
 .crm-shake {
@@ -1736,17 +1833,18 @@ button.btn-ghost:hover {
   }
 }
 .crm-tooltip {
-  position: fixed;
-  z-index: 500;
+  position: absolute;
+  z-index: 50;
   background: #1a2018;
-  border: 1px solid rgba(182, 233, 66, 0.25);
+  border: 1px solid rgba(182, 233, 66, 0.3);
   border-radius: var(--r);
-  padding: 10px 16px;
+  padding: 10px 14px;
   font-size: 13px;
-  color: rgba(251, 251, 248, 0.85);
-  max-width: 240px;
+  color: rgba(251, 251, 248, 0.9);
+  width: max-content;
+  max-width: min(240px, 80vw);
   pointer-events: none;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -110%);
   animation: crm-tooltip-in 0.2s var(--ease);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   line-height: 1.5;
@@ -2291,30 +2389,8 @@ button.btn-ghost:hover {
   box-shadow: 0 0 8px rgba(182, 233, 66, 0.4);
 }
 
-/* Responsive for new elements */
-@media (max-width: 768px) {
-  .hon2-board {
-    grid-template-columns: 1fr;
-  }
-  .hon2-card {
-    height: auto;
-    min-height: 220px;
-  }
-  .crm-game {
-    max-width: 100%;
-  }
-  .hero-right {
-    display: block !important;
-  }
-  .crm-revenue {
-    min-width: 0;
-    width: 100%;
-  }
-}
+/* Privacy page mobile */
 @media (max-width: 480px) {
-  .hon2-board {
-    grid-template-columns: 1fr;
-  }
   .privacy-page {
     padding: 60px 1rem 40px;
   }
